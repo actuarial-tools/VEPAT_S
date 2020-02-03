@@ -17,16 +17,42 @@ volcanoSelect = html.Label(
                 ]
             )
 
-questionSelect = html.Label(
+
+ruapehuQuestionSelect = html.Label(
                 [
                     "Select Question",
                     dcc.Dropdown(
-                        id='question-dropdown',
+                        id='ruapehuQuestsionsDropDown',
                         options=[
-                            {'label': 'Ruapehu', 'value': 'Ruapehu'},
-                            {'label': 'Whakaari', 'value': 'Whakaari'},
-                            {'label': 'Tongariro', 'value': 'Tongariro'}
-                        ],
-                        value='Whakaari'
+                            {'label': 'rq1', 'value': 'Ruapehu question 1 ?'},
+                            {'label': 'rq2', 'value': 'Ruapehu question 2 ?'},
+                            {'label': 'rq2', 'value': 'Ruapehu question 3 ?'}
+                        ]
+                    ),
+                ])
+
+whakaariQuestionSelect= html.Label(
+                [
+                    "please select Question for Whakaari elicitation",
+                    dcc.Dropdown(
+                        id='whakaariQuestsionsDropDown',
+                        options=[
+                            {'label': 'wq1', 'value': 'Whakaari question 1 ?'},
+                            {'label': 'wq2', 'value': 'Whakaari question 2 ?'},
+                            {'label': 'wq2', 'value': 'Whakaari question 3 ?'}
+                        ]
+                    ),
+                ])
+
+tongariroQuestionSelect= html.Label(
+                [
+                    "please select Question for Tongariro elicitation",
+                    dcc.Dropdown(
+                        id='tongariroQuestsionsDropDown',
+                        options=[
+                            {'label': 'tq1', 'value': 'Tongariro question 1 ?'},
+                            {'label': 'tq2', 'value': 'Tongariro question 2 ?'},
+                            {'label': 'tq2', 'value': 'Tongariro question 3 ?'}
+                        ]
                     ),
                 ])

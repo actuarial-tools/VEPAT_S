@@ -1,9 +1,10 @@
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+from dash.dependencies import Input, Output
 
 
-from dashBoardElements import volcanoSelect, questionSelect
+from dashBoardElements import volcanoSelect, ruapehuQuestionSelect, whakaariQuestionSelect, tongariroQuestionSelect
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -13,8 +14,7 @@ app.layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Admin', children=[
             volcanoSelect,
-            questionSelect,
-            html.Div(id='dd-output-container')
+            html.Div(id='questionsContainer')
         ]),
         dcc.Tab(label='Provide Elicitation', children=[
             dcc.Graph(
@@ -42,6 +42,18 @@ app.layout = html.Div([
         ]),
     ])
 ])
+
+@app.callback(
+    Output('questionsContainer', 'children'),
+    [Input('Volcano-dropdown', 'value')])
+def provideQuestionSetForVolcano(input_value):
+    if input_value == 'Ruapehu':
+        return ruapehuQuestionSelect
+    if input_value == 'Whakaari':
+        return whakaariQuestionSelect
+    if input_value == 'Tongariro':
+        return tongariroQuestionSelect
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
