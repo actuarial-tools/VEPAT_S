@@ -1,59 +1,46 @@
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output
 
+from dashBoardElements import dbElements
 
-from dashBoardElements import volcanoSelect, ruapehuQuestionSelect, whakaariQuestionSelect, tongariroQuestionSelect
+class mainApplication( object ):
+    def run_server( self ):
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+        self.app.run_server(debug=True)
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+    def __init__( self ):
+        self.external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app.layout = html.Div([
-    dcc.Tabs([
-        dcc.Tab(label='Admin', children=[
-            volcanoSelect,
-            html.Div(id='questionsContainer')
-        ]),
-        dcc.Tab(label='Provide Elicitation', children=[
-            dcc.Graph(
-                figure={
-                    'data': [
-                        {'x': [1, 2, 3], 'y': [1, 4, 1],
-                         'type': 'bar', 'name': 'SF'},
-                        {'x': [1, 2, 3], 'y': [1, 2, 3],
-                         'type': 'bar', 'name': u'Montréal'},
-                    ]
-                }
-            )
-        ]),
-        dcc.Tab(label='Report', children=[
-            dcc.Graph(
-                figure={
-                    'data': [
-                        {'x': [1, 2, 3], 'y': [2, 4, 3],
-                         'type': 'bar', 'name': 'SF'},
-                        {'x': [1, 2, 3], 'y': [5, 4, 3],
-                         'type': 'bar', 'name': u'Montréal'},
-                    ]
-                }
-            )
-        ]),
-    ])
-])
+        self.app = dash.Dash(__name__, external_stylesheets=self.external_stylesheets)
 
-@app.callback(
-    Output('questionsContainer', 'children'),
-    [Input('Volcano-dropdown', 'value')])
-def provideQuestionSetForVolcano(input_value):
-    if input_value == 'Ruapehu':
-        return ruapehuQuestionSelect
-    if input_value == 'Whakaari':
-        return whakaariQuestionSelect
-    if input_value == 'Tongariro':
-        return tongariroQuestionSelect
+        self.dbe = dbElements()
+
+        self.app.layout = html.Div([
+            dcc.Tabs([
+                self.dbe.adminTab,
+                self.dbe.elicitationTab,
+                self.dbe.reportTab,
+            ])
+        ])
+
+        self.dbe.myClosure(self.app)
+
+        self.run_server()
+
+# class OtherOne( object ):
+#     def myClosure( self, app, dbe ):
+#         @app.callback(Output( dbe.fred, 'children'),
+#                            [Input('Volcano-dropdown', 'value')]
+#                            )
+#         def provideWhatever( input_value ):
+#             if input_value == 'Ruapehu':
+#                 return dbe.ruapehuQuestionSelect
+#             if input_value == 'Whakaari':
+#                 return dbe.whakaariQuestionSelect
+#             if input_value == 'Tongariro':
+#                 return dbe.tongariroQuestionSelect
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    ma = mainApplication()
