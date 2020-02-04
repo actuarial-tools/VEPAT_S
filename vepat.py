@@ -24,23 +24,9 @@ class mainApplication( object ):
             ])
         ])
 
-        self.dbe.myClosure(self.app)
+        self.dbe.setQuestionForVolcano( self.app )
 
         self.run_server()
-
-# class OtherOne( object ):
-#     def myClosure( self, app, dbe ):
-#         @app.callback(Output( dbe.fred, 'children'),
-#                            [Input('Volcano-dropdown', 'value')]
-#                            )
-#         def provideWhatever( input_value ):
-#             if input_value == 'Ruapehu':
-#                 return dbe.ruapehuQuestionSelect
-#             if input_value == 'Whakaari':
-#                 return dbe.whakaariQuestionSelect
-#             if input_value == 'Tongariro':
-#                 return dbe.tongariroQuestionSelect
-
 
 if __name__ == '__main__':
     ma = mainApplication()
