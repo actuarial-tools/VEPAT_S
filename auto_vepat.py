@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import math
 from openpyxl import load_workbook
-import utils_vepta as utiv
+import utils_vepat as utiv
 
 #dirDat = pathlib.Path('/home/sapthala/Projects19_20/VEPAT/From_Natalia')
 """
