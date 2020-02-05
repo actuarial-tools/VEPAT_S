@@ -24,7 +24,7 @@ class mainApplication( object ):
             ])
         ])
 
-        self.dbe.setQuestionForVolcano( self.app )
+        self.dbe.callSetQuestionForVolcano( self.app )
 
         self.run_server()
 
