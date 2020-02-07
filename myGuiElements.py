@@ -1,5 +1,6 @@
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 
 mapbox_access_token = 'need to get this form mapbox - I wonder if it is free ?'
 # WORKING OF THIS EXAMPE https://medium.com/a-r-g-o/using-plotlys-dash-to-deliver-public-sector-decision-support-dashboards-ac863fa829fb
@@ -82,15 +83,25 @@ class myDropDown(object):
         )
 
 
+class myButton(object):
+    def __init__(self, id, label):
+        self.id = id
+        self.element = html.Div([
+            dbc.Button(label, id=id, color="primary", className="mr-1")
+        ])
+
+
 class myContainer(object):
 
-    def __init__(self, id, label=None):
+    def __init__(self, id, label, children=None):
         self.id = id
-        self.element = html.H4(
-            [label,
-             html.Div(id=id)
-             ]
-        )
+        self.element = html.Div(
+            [
+                label,
+                dbc.Container(children=children,
+                              id=id,
+                              className="mt-4")
+            ])
 
 
 class myGraph(object):

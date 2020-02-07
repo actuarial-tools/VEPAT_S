@@ -8,7 +8,7 @@ class mainApplication( object ):
         self.app.run_server(debug=True)
 
     def __init__( self ):
-        self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
+        self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], suppress_callback_exceptions=True)
 
         # this class will become obsolete ? when we start using dash_bootstrap_components ?
         self.dbe = dbElements()
@@ -17,7 +17,8 @@ class mainApplication( object ):
         # bhttps: // dash - bootstrap - components.opensource.faculty.ai / l / components / layout
         self.app.layout = self.dbe.mainLayout()
 
-        self.dbe.setQuestionForVolcano(self.app)
+        #register your callbacks here:
+        self.dbe.adminTab.setQuestionForVolcano(self.app)
 
         self.run_server()
 
