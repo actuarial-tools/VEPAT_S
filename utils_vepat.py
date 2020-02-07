@@ -3,17 +3,13 @@
 import pandas as pd
 import numpy as np
 import math
-import fiona
-import pathlib
-import os, sys
+# import pathlib
+# import os, sys
 
 
 #create table based on the inputs
-def table_vpt():
-    pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
-    minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
-    maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
+def table_vpt(pNo, bestG, minG, maxG):
+
     
     d1 ={'Person': pNo, 
         'Best guess': bestG,
@@ -48,7 +44,7 @@ def table_stat_vpt(dfd):
    
 #calculations necessary to produce tables and plots   
 #input parameters: dfd, d1_stat, elcitation, duration 
-def cal_vpt(df1,df2,elc,du):
+def cal_vpt(df2,elc,du):
     p_erup = df2.iloc[2]['Best Guess'] #P(eruption in period):
     p_Nerup = 1 - p_erup #P(no erupt. in period):
     
@@ -64,9 +60,8 @@ def cal_vpt(df1,df2,elc,du):
         B7 = B6*24 #days
     else:
         B7 = -1 #hours
-        
-    
-    p_Neruphr = math.pow(p_Nerup, 1/B7)
+
+    p_Neruphr = round(math.pow(p_Nerup, 1/B7), 3)
     
         
     erp_cls = {
