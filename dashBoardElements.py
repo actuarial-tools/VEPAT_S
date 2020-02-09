@@ -1,56 +1,48 @@
+from multiprocessing import active_children
+
+import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
-from myGuiElements import myDropDown, myContainer
+from adminTab import adminTab
+from elicitationTab import elicitationTab
+from reportTab import reportTab
 
 
-class dbElements( object ):
+class dbElements(object):
 
-	def __init__( self ):
+    def __init__(self):
+        self.adminTab = adminTab(id = 'Admin')
+        self.elicitationTab = elicitationTab(id = 'elictation')
+        self.reportTab = reportTab( id = 'report')
 
-		self.volcanoSelect = myDropDown( label='Please select a volcano',
-										 options=[ { 'label': 'Ruapehu', 'value': 'Ruapehu' },
-												   { 'label': 'Whakaari', 'value': 'Whakaari' },
-												   { 'label': 'Tongariro', 'value': 'Tongariro' } ],
-										 id='Volcano-dropdown',
-										 defaultValue='Whakaari' )
+    def mainLayout(self):
+        return html.Div(children=[
+            self.navbar(),
+            dcc.Tabs([
+                self.adminTab.element,
+                self.elicitationTab.element,
+                self.reportTab.element,
+            ])
+        ])
 
-		self.questionSelect = myContainer( label='Please select a question for selected volcano ... ', id='questions' )
-
-		self.adminTab = dcc.Tab( label='Admin', children=[
-			self.volcanoSelect.element,
-			self.questionSelect.element
-		] )
-
-		self.reportTab = dcc.Tab( label='Report', children=[ ] )
-
-		self.elicitationTab = dcc.Tab( label='Provide Elicitation', children=[ ] )
-
-	def callSetQuestionForVolcano( self, app ):
-		@app.callback( Output( self.questionSelect.id, 'children' ),
-					   [ Input( self.volcanoSelect.id, 'value' ) ]
-					   )
-		def setQuestionForVolcano( input_value ):
-			if input_value == 'Ruapehu':
-				return myDropDown( id='ruapehuQuestionsDropDown',
-								   options=[
-									   { 'label': 'rq1', 'value': 'Ruapehu question 1 ?' },
-									   { 'label': 'rq2', 'value': 'Ruapehu question 2 ?' },
-									   { 'label': 'rq2', 'value': 'Ruapehu question 3 ?' }
-								   ] ).element
-
-			if input_value == 'Whakaari':
-				return myDropDown( id='whakaariQuestionsDropDown',
-								   options=[
-									   { 'label': 'wq1', 'value': 'Whakaari question 1 ?' },
-									   { 'label': 'wq2', 'value': 'Whakaari question 2 ?' },
-									   { 'label': 'wq2', 'value': 'Whakaari question 3 ?' }
-								   ] ).element
-
-			if input_value == 'Tongariro':
-				return myDropDown( id='tongariroQuestionsDropDown',
-								   options=[
-									   { 'label': 'tq1', 'value': 'Tongariro question 1 ?' },
-									   { 'label': 'tq2', 'value': 'Tongariro question 2 ?' },
-									   { 'label': 'tq2', 'value': 'Tongariro question 3 ?' }
-								   ] ).element
+    def navbar(self):
+        return dbc.NavbarSimple(
+            children=[
+                dbc.NavItem(dbc.NavLink("Link", href="#")),
+                dbc.DropdownMenu(
+                    nav=True,
+                    in_navbar=True,
+                    label="Menu",
+                    children=[
+                        dbc.DropdownMenuItem("Entry 1"),
+                        dbc.DropdownMenuItem("Entry 2"),
+                        dbc.DropdownMenuItem(divider=True),
+                        dbc.DropdownMenuItem("Entry 3"),
+                    ],
+                ),
+            ],
+            brand="Demo",
+            brand_href="#",
+            sticky="top",
+        )

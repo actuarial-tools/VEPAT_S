@@ -1,7 +1,5 @@
 import dash
-import dash_html_components as html
-import dash_core_components as dcc
-
+import dash_bootstrap_components as dbc
 from dashBoardElements import dbElements
 
 class mainApplication( object ):
@@ -10,21 +8,17 @@ class mainApplication( object ):
         self.app.run_server(debug=True)
 
     def __init__( self ):
-        self.external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+        self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], suppress_callback_exceptions=True)
 
-        self.app = dash.Dash(__name__, external_stylesheets=self.external_stylesheets)
-
+        # this class will become obsolete ? when we start using dash_bootstrap_components ?
         self.dbe = dbElements()
 
-        self.app.layout = html.Div([
-            dcc.Tabs([
-                self.dbe.adminTab,
-                self.dbe.elicitationTab,
-                self.dbe.reportTab,
-            ])
-        ])
+        # FOR GRIPD LAYOUTS TRY THIS: https://dash-bootstrap-components.opensource.faculty.ai/
+        # bhttps: // dash - bootstrap - components.opensource.faculty.ai / l / components / layout
+        self.app.layout = self.dbe.mainLayout()
 
-        self.dbe.callSetQuestionForVolcano( self.app )
+        #register your callbacks here:
+        self.dbe.adminTab.setQuestionForVolcano(self.app)
 
         self.run_server()
 
