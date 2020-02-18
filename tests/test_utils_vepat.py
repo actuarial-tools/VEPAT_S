@@ -23,6 +23,7 @@ class Test(TestCase):
         self.assertEqual(first=response["P(no eruption in hr)"], second=0.995)
 
     def test_table_stat_vpt(self):
+        #adding a comment to see what's wrong with git ...
         pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
         minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
