@@ -18,14 +18,14 @@ d ={'Person': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     'Max': [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]}
 """
 ########Elicitation inputs###
-elc = raw_input("Elecitation: ")
+elc = int(input("Elecitation: "))
 du = 4
 print("Duration:", du)
 
 ################
 
 #create table based on the inputs
-df1 = utiv.table_vpt()
+df1 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
 
 #calculate stats based on the table
 df2 = utiv.table_stat_vpt(df1)
