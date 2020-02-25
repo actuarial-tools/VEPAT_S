@@ -6,7 +6,7 @@ from utils_vepat import cal_vpt, table_vpt, table_stat_vpt
 from pandas._testing import assert_frame_equal
 
 
-class Test(TestCase):
+class Test(TestCase): #run this test for elecitation = 1 and duration = 4
     def test_cal_vpt(self):
         pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
@@ -19,9 +19,15 @@ class Test(TestCase):
 
         response = cal_vpt(df1,df2=df2,elc=1,du=4)
 
-        self.assertEqual(first=response["P(eruption in period)"], second=0.300)
-        self.assertEqual(first=response["P(no erupt. in period)"], second=0.700)
-        self.assertEqual(first=response["P(no eruption in hr)"], second=0.9852484304089107)
+        self.assertEqual(first=response["P(eruption in period)"], second=0.300),
+        self.assertEqual(first=response["P(no erupt. in period)"], second=0.700),
+        self.assertEqual(first=response["P(no eruption in hr)"], second=0.985),
+        self.assertEqual(first=response["P(eruption in hr)"], second=0.0148),
+        self.assertEqual(first=response["P(small eruption in hr)"],second=0.0133),
+        self.assertEqual(first=response["P(moderate eruption in hr)"],second=0.00133),
+        self.assertEqual(first=response["P(large eruption in hr)"],second=0.000148)
+
+
 
     def test_table_stat_vpt(self):
         #adding a comment to see what's wrong with git ...

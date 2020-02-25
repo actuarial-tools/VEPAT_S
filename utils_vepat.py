@@ -69,12 +69,20 @@ def cal_vpt(df1, df2, elc, du):
         B7 = -1  # hours
 
     p_Neruphr = math.pow(p_Nerup, 1 / B7)
+    p_eruphr = 1 - p_Neruphr
+    p_lrgeruphr = p_eruphr / 100
+    p_mderuphr = (p_eruphr / 10) - p_lrgeruphr
+    p_smleruphr = p_eruphr - p_mderuphr - p_lrgeruphr
+
 
     erp_cls = {
         "P(eruption in period)": p_erup,
-        "P(no erupt. in period)": p_Nerup,
-        "P(no eruption in hr)": p_Neruphr
-
+              "P(no erupt. in period)": p_Nerup,
+              "P(no eruption in hr)": round(p_Neruphr, 3),
+              "P(eruption in hr)": round(p_eruphr, 4),
+              "P(small eruption in hr)": round(p_smleruphr, 4),
+              "P(moderate eruption in hr)": round(p_mderuphr,5),
+              "P(large eruption in hr)": round(p_lrgeruphr,6)
     }
 
     return erp_cls
