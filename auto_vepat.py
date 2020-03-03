@@ -5,6 +5,7 @@ import pandas as pd
 import math
 from openpyxl import load_workbook
 import utils_vepat as utiv
+import pcal_vepat as pcals
 
 #dirDat = pathlib.Path('/home/sapthala/Projects19_20/VEPAT/From_Natalia')
 """
@@ -32,3 +33,6 @@ df2 = utiv.table_stat_vpt(df1)
 
 #calculations for plotting and other, calculations from this function saved as a dictionary
 erp_cals = utiv.cal_vpt(df1,df2,elc,du)
+
+# P of death from one ballistic depending on the size and direction
+phit = pcals.phit_cal.from_input()

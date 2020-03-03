@@ -87,19 +87,29 @@ def cal_vpt(df1, df2, elc, du):
 
     return erp_cls
 
-    #p_Neruphr = math.pow(p_Nerup, con1)
-    
-    
-    
-    #p_eruphr = 
 
-    
-   
-    
-    
+###############calculating Pdeath from one ballistic##############
+# initial table with ballistic information
+def table_phit():
+    ball_dia = [0.2, 0.3, 0.4]
+    person_dia = [1, 1, 1]
+    sq_lng = [30, 30, 30]
 
-        
-    
-        
-        
-       
+    d1 = {'Bdia': ball_dia,
+          'Pdia': person_dia,
+          'Sqln': sq_lng}
+    db1 = pd.DataFrame(data=d1)
+
+    return db1
+
+
+
+
+
+
+
+
+
+
+
+

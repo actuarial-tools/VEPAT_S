@@ -30,13 +30,12 @@ class Test(TestCase): #run this test for elecitation = 1 and duration = 4
 
 
     def test_table_stat_vpt(self):
-        #adding a comment to see what's wrong with git ...
         pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
         Best_guessR = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
         minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
         maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
-       #to be modified 84th p
+
         df2= {'Stat': ['Mean', 'Median', '84th percentile'],
               'Best Guess': [0.188, 0.190, 0.300],
               'Min': [0.074, 0.05, ""],
