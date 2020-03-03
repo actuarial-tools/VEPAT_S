@@ -22,11 +22,14 @@ class riskcals(object):
                 self.set_metadata("path", [fn])
 
 
-class phit_cal(riskcals):
-    def __init__(self,dr):
-        
-        self.dr = dr
+class risk_cal(riskcals):
+    
+    def __init__(self, dr):
         self.data = utiv.table_phit()
+        self.dr = dr
+        #self.phit_cal()
+        
+    def phit_cal(self):
         self.data['Area'] = self.data['Sqln']**2
         self.data['Phit_abv'] = math.pi * ((self.data['Bdia'] + self.data['Pdia']).div(self.data['Sqln'], axis = 0) **2)
         self.data['Phit_side'] = (self.data['Bdia'] + self.data['Pdia']).div(self.data['Sqln'], axis = 0)
