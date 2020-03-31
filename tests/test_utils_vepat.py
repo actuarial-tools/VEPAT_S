@@ -6,6 +6,7 @@ from utils_vepat import cal_vpt, table_vpt, table_stat_vpt
 from pandas._testing import assert_frame_equal
 
 
+
 class Test(TestCase): #run this test for elecitation = 1 and duration = 4
     def test_cal_vpt(self):
         pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -36,10 +37,10 @@ class Test(TestCase): #run this test for elecitation = 1 and duration = 4
         minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
         maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
 
-        df2= {'Stat': ['Mean', 'Median', '84th percentile'],
-              'Best Guess': [0.188, 0.190, 0.300],
-              'Min': [0.074, 0.05, ""],
-              'Max': [0.355, 0.4, ""]}
+        df2 = {'Stat': ['Mean', 'Median', '84th percentile'],
+               'Best Guess': [0.188, 0.190, 0.300],
+               'Min': [0.074, 0.05, ""],
+               'Max': [0.355, 0.4, ""]}
         d_test = pandas.DataFrame(data=df2)
 
         df1 = table_vpt(pNo, bestG,Best_guessR, minG, maxG)
