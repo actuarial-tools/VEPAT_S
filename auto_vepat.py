@@ -34,5 +34,17 @@ df2 = utiv.table_stat_vpt(df1)
 #calculations for plotting and other, calculations from this function saved as a dictionary
 erp_cals = utiv.cal_vpt(df1,df2,elc,du)
 
-# P of death from one ballistic depending on the size and direction
-phit = pcals.phit_cal.from_input()
+#Table: Near Vent Processes
+near_vent = utiv.table_near_vent_proc(erp_cals)
+
+# P of death from one ballistics: tables & calculations
+phit = pcals.risk_cal.from_input()
+df1 = utiv.table_phit()
+df2 = utiv.ballistics_100m(erp_cals)
+phit.load_dfs(df1, df2)
+
+#Tables of Death from one ballistic: 0.2 m/0.3/0.4
+phit_tbl = phit.phit_cal()
+
+#ballistics 100m table for statnadrd, adjusted
+ball_100m = ball100cal()

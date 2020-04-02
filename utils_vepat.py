@@ -5,6 +5,7 @@ import numpy as np
 import math
 # import pathlib
 # import os, sys
+import pcal_vepat as pcals
 
 
 #create table based on the inputs
@@ -88,8 +89,8 @@ def cal_vpt(df1, df2, elc, du):
     return erp_cls
 
 
-###############calculating Pdeath from one ballistic##############
-# initial table with ballistic information
+###############tables involve with total risk of dying in hour##############
+# initial table with ballistic information, this is used by pcal_vepat for calculating probability of hit
 def table_phit():
     ball_dia = [0.2, 0.3, 0.4]
     person_dia = [1, 1, 1]
@@ -98,13 +99,67 @@ def table_phit():
     d1 = {'Bdia': ball_dia,
           'Pdia': person_dia,
           'Sqln': sq_lng}
-    db1 = pd.DataFrame(data=d1)
+    df1 = pd.DataFrame(data=d1)
 
-    return db1
+    return df1
+
+#function to extract values from dictionary: erp_cls
+def get_p_hourly(dct1):
+    #getting P(hourly) from erp_cls
+    p_small = dct1.get("P(small eruption in hr)", "")
+    p_mod = dct1.get("P(moderate eruption in hr)", "")
+    p_lrg = dct1.get("P(large eruption in hr)", "")
+    return p_small, p_mod, p_lrg
 
 
 
+#create table: NEAR VENT PROCESSES (WATER SPOUTS, LANDSLIDES, SHOCK/PRESSURE WAVES, DENSE SLUGS, ETC.)
+#the same table is used for in the Standard calculation, ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR, and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR
 
+def table_near_vent_proc(dct1):
+    #getting P(hourly) from erp_cls
+    p_small = get_p_hourly(dct1)[0]
+    p_mod = get_p_hourly(dct1)[1]
+    p_lrg = get_p_hourly(dct1)[2]
+
+    erps = ["Small","Moderate","Large"]
+    p_hrly = [p_small, p_mod, p_lrg]
+    p_erp_expo = [0, 0.1, 1]
+    p_exo_death = [0.9, 0.9, 1]
+    p_erp_death = [0, 0.09, 1]
+
+    df_nvp = {'Eruption size': erps,
+             'P(hourly)': p_hrly,
+             'P(given eruption, exposure to near vent processes)': p_erp_expo,
+             'P(given exposure, death from near vent processes)': p_exo_death,
+             'P(given eruption, death from near vent processes)': p_erp_death}
+    table_nvp= pd.DataFrame(data=df_nvp)
+    table_nvp['P(death from near vent processes in hr)'] = table_nvp['P(hourly)'] * table_nvp['P(given eruption, death from near vent processes)']
+
+    return table_nvp
+
+#Generate table for Ballistics, need 3 different tables for Distance = 100 m/350 m and 750 m
+def ballistics_100m(dct1):
+    # getting P(hourly) from erp_cls
+    p_small = get_p_hourly(dct1)[0]
+    p_mod = get_p_hourly(dct1)[1]
+    p_lrg = get_p_hourly(dct1)[2]
+
+    erps = ["Small", "Moderate", "Large"]
+    p_hrly = [p_small, p_mod, p_lrg]
+    ball_dia = [0.3, 0.3, 0.3]
+    ball_area = [5, 50, 200]
+
+    ## p_erp_death_ball = [x, y, z]
+
+    df2_ballp100 = {'Eruption size': erps,
+                    'P(hourly)': p_hrly,
+                    'Ballistic diameter (m)': ball_dia,
+                    # BRA:Given eruption, # ballistics in reference area
+                    'Given eruption, # ballistics in reference area': ball_area, }
+    # 'P(given eruption, death from ballistics)': p_erp_death_ball}
+    df2_bp100 = pd.DataFrame(data=df2_ballp100)
+    return df2_bp100
 
 
 
