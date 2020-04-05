@@ -41,6 +41,7 @@ class risk_cal(object):
         self.df1['Phit_side'] = (self.df1['Bdia'] + self.df1['Pdia']).div(self.df1['Sqln'], axis = 0)
         # self.df1['Gmean'] = gmean(self.df1.iloc[:, 4:5], axis = 1)
         self.df1['Gmean'] = (self.df1['Phit_abv'] * self.df1['Phit_side']) ** (1/2)
+
         
         if self.dr == 'above':
                 self.df1['P_hit'] = self.df1['Phit_abv']
@@ -50,6 +51,8 @@ class risk_cal(object):
         else:
                 self.df1['P_hit'] = self.df1['Gmean']
 
+        self.df1.columns = ['Boulder diameter (m)', 'Person diameter (m)', 'Square length (m)', 'Area (m^2)', 'P(hit) Above',\
+                     'P(hit) Side', 'P(hit) Geometric mean', 'P(hit)']
         return self.df1
 
     @classmethod
@@ -60,9 +63,9 @@ class risk_cal(object):
         )
 
 
-    def ball100cal(self):
-        self.df3 = self.df1[['Bdia', 'P_hit']]
-        self.df3.set_index('Bdia', inplace=True)
+    def ballis_cal(self):
+        self.df3 = self.df1[['Boulder diameter (m)', 'P(hit)']]
+        self.df3.set_index('Boulder diameter (m)', inplace=True)
         self.dfb1= self.df2.merge(
                      self.df3,
                      left_on='Ballistic diameter (m)',
@@ -73,9 +76,9 @@ class risk_cal(object):
         #BRA:Given eruption, # ballistics in reference area
         self.bpr = self.dfb1['Given eruption, # ballistics in reference area']
        # self.dfb1['P(given eruption, death from ballistics)'] = (1 - self.dfb1['P_hit'])
-        self.dfb1['P(given eruption, death from ballistics)'] = (1 - self.dfb1['P_hit']).pow(self.bpr, axis=0)
+        self.dfb1['P(given eruption, death from ballistics)'] = (1 - self.dfb1['P(hit)']).pow(self.bpr, axis=0)
         self.dfb1['P(given eruption, death from ballistics)'] = 1 - self.dfb1['P(given eruption, death from ballistics)']
         self.dfb1['P(death from ballistics in hr)'] = self.dfb1['P(hourly)'] * self.dfb1['P(given eruption, death from ballistics)']
-        self.dfb1 = self.dfb1.drop(['P_hit'], axis=1)
-
+        self.dfb1 = self.dfb1.drop(['P(hit)'], axis=1)
+        return self.dfb1
 

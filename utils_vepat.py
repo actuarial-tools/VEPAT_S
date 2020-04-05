@@ -139,6 +139,7 @@ def table_near_vent_proc(dct1):
     return table_nvp
 
 #Generate table for Ballistics, need 3 different tables for Distance = 100 m/350 m and 750 m
+#100m
 def ballistics_100m(dct1):
     # getting P(hourly) from erp_cls
     p_small = get_p_hourly(dct1)[0]
@@ -160,8 +161,50 @@ def ballistics_100m(dct1):
     # 'P(given eruption, death from ballistics)': p_erp_death_ball}
     df2_bp100 = pd.DataFrame(data=df2_ballp100)
     return df2_bp100
+#350m
+def ballistics_350m(dct1):
+    # getting P(hourly) from erp_cls
+    p_small = get_p_hourly(dct1)[0]
+    p_mod = get_p_hourly(dct1)[1]
+    p_lrg = get_p_hourly(dct1)[2]
 
+    erps = ["Small", "Moderate", "Large"]
+    p_hrly = [p_small, p_mod, p_lrg]
+    ball_dia = [0.2, 0.3, 0.3]
+    ball_area = [0.1, 10, 100]
 
+    ## p_erp_death_ball = [x, y, z]
+
+    df2_ballp350 = {'Eruption size': erps,
+                    'P(hourly)': p_hrly,
+                    'Ballistic diameter (m)': ball_dia,
+                    # BRA:Given eruption, # ballistics in reference area
+                    'Given eruption, # ballistics in reference area': ball_area, }
+    # 'P(given eruption, death from ballistics)': p_erp_death_ball}
+    df2_bp350 = pd.DataFrame(data=df2_ballp350)
+    return df2_bp350
+
+def ballistics_750m(dct1):
+    # getting P(hourly) from erp_cls
+    p_small = get_p_hourly(dct1)[0]
+    p_mod = get_p_hourly(dct1)[1]
+    p_lrg = get_p_hourly(dct1)[2]
+
+    erps = ["Small", "Moderate", "Large"]
+    p_hrly = [p_small, p_mod, p_lrg]
+    ball_dia = [0, 0.2, 0.3]
+    ball_area = [0, 5, 10]
+
+    ## p_erp_death_ball = [x, y, z]
+
+    df2_ballp750 = {'Eruption size': erps,
+                    'P(hourly)': p_hrly,
+                    'Ballistic diameter (m)': ball_dia,
+                    # BRA:Given eruption, # ballistics in reference area
+                    'Given eruption, # ballistics in reference area': ball_area, }
+    # 'P(given eruption, death from ballistics)': p_erp_death_ball}
+    df2_bp750 = pd.DataFrame(data=df2_ballp750)
+    return df2_bp750
 
 
 

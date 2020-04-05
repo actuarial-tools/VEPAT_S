@@ -40,11 +40,24 @@ near_vent = utiv.table_near_vent_proc(erp_cals)
 # P of death from one ballistics: tables & calculations
 phit = pcals.risk_cal.from_input()
 df1 = utiv.table_phit()
-df2 = utiv.ballistics_100m(erp_cals)
-phit.load_dfs(df1, df2)
+phit.load_dfs(df1, df2=None)
 
 #Tables of Death from one ballistic: 0.2 m/0.3/0.4
 phit_tbl = phit.phit_cal()
 
 #ballistics 100m table for statnadrd, adjusted
-ball_100m = ball100cal()
+df100 = utiv.ballistics_100m(erp_cals)
+phit.load_dfs(df1, df100)
+ball_100m = phit.ballis_cal()
+
+#ballistics 350m table for statnadrd, adjusted
+df350 = utiv.ballistics_350m(erp_cals)
+phit.load_dfs(df1, df350)
+ball_350m = phit.ballis_cal()
+
+
+#ballistics 750m table for statnadrd, adjusted
+df750 = utiv.ballistics_750m(erp_cals)
+phit.load_dfs(df1, df750)
+ball_750m = phit.ballis_cal()
+
