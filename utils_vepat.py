@@ -111,6 +111,17 @@ def get_p_hourly(dct1):
     p_lrg = dct1.get("P(large eruption in hr)", "")
     return p_small, p_mod, p_lrg
 
+def tbl_surge(dct1,lst1,lst2,lst3):
+    tb1 = {'Eruption size': dct1,
+                  'P(hourly)': lst1,
+                  'P(given eruption, exposure to surge)': lst2,
+                  'P(given exposure, death from surge)': lst3}
+    tb1_p = pd.DataFrame(data=tb1)
+    tb1_p['P(given eruption, death from surge)'] = tb1_p['P(given eruption, exposure to surge)'] * tb1_p['P(given exposure, death from surge)']
+    tb1_p['P(death from surge in hr)'] = tb1_p['P(hourly)'] * tb1_p['P(given eruption, death from surge)']
+
+    return tb1_p
+
 
 
 #create table: NEAR VENT PROCESSES (WATER SPOUTS, LANDSLIDES, SHOCK/PRESSURE WAVES, DENSE SLUGS, ETC.)
@@ -126,17 +137,17 @@ def table_near_vent_proc(dct1):
     p_hrly = [p_small, p_mod, p_lrg]
     p_erp_expo = [0, 0.1, 1]
     p_exo_death = [0.9, 0.9, 1]
-    p_erp_death = [0, 0.09, 1]
 
     df_nvp = {'Eruption size': erps,
-             'P(hourly)': p_hrly,
-             'P(given eruption, exposure to near vent processes)': p_erp_expo,
-             'P(given exposure, death from near vent processes)': p_exo_death,
-             'P(given eruption, death from near vent processes)': p_erp_death}
-    table_nvp= pd.DataFrame(data=df_nvp)
+              'P(hourly)': p_hrly,
+              'P(given eruption, exposure to near vent processes)': p_erp_expo,
+              'P(given exposure, death from near vent processes)': p_exo_death}
+    table_nvp = pd.DataFrame(data=df_nvp)
+    table_nvp['P(given eruption, death from near vent processes)'] = table_nvp[ 'P(given eruption, exposure to near vent processes)'] * table_nvp['P(given exposure, death from near vent processes)']
     table_nvp['P(death from near vent processes in hr)'] = table_nvp['P(hourly)'] * table_nvp['P(given eruption, death from near vent processes)']
 
     return table_nvp
+
 
 #Generate table for Ballistics, need 3 different tables for Distance = 100 m/350 m and 750 m
 #100m
@@ -206,7 +217,51 @@ def ballistics_750m(dct1):
     df2_bp750 = pd.DataFrame(data=df2_ballp750)
     return df2_bp750
 
+#SURGE: 100m/350m/750m/ for standard, adjusted crator floor and helicopter in southern sector
 
+def table_surge(dct1):
+    #getting P(hourly) from erp_cls
+    p_small = get_p_hourly(dct1)[0]
+    p_mod = get_p_hourly(dct1)[1]
+    p_lrg = get_p_hourly(dct1)[2]
+
+    erps = ["Small","Moderate","Large"]
+    p_hrly = [p_small, p_mod, p_lrg]
+
+    #P(given eruption, exposure to surge) at 100, 350 and 750m distance for STANDARD CALCULATION (strd),
+    #ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
+    #strd
+    p_erp_expo100_strd = [0.01, 0.3, 0.4]
+    p_erp_expo350_strd = [0, 0.3, 0.4]
+    p_erp_expo750_strd = [0, 0.2, 0.4]
+    #adjc
+    p_erp_expo100_adjc = [1, 1, 1]
+    p_erp_expo350_adjc = [0.5, 1, 1]
+    p_erp_expo750_adjc = [0, 1, 1]
+    #adjh
+    p_erp_expo100_adjh = [1, 1, 1]
+    p_erp_expo350_adjh = [0, 0.3, 1]
+    p_erp_expo750_adjh = [0, 0.05, 1]
+
+   #P(given exposure, death from surge) at 100m, 350m and 750m distances
+    p_exo_death100 = [0.95, 1, 1]
+    p_exo_death350 = [0.95, 0.95, 1]
+    p_exo_death750= [0.95, 0.95, 0.95]
+
+    #generate all 9 tables:
+    df1_srg100strd = tbl_surge(erps, p_hrly, p_erp_expo100_strd, p_exo_death100)
+    df1_srg350strd = tbl_surge(erps, p_hrly, p_erp_expo350_strd, p_exo_death350)
+    df1_srg750strd = tbl_surge(erps, p_hrly, p_erp_expo750_strd, p_exo_death750)
+
+    df1_srg100adjc = tbl_surge(erps, p_hrly, p_erp_expo100_adjc, p_exo_death100)
+    df1_srg350adjc = tbl_surge(erps, p_hrly, p_erp_expo350_adjc, p_exo_death350)
+    df1_srg750adjc = tbl_surge(erps, p_hrly, p_erp_expo750_adjc, p_exo_death750)
+
+    df1_srg100adjh = tbl_surge(erps, p_hrly, p_erp_expo100_adjh, p_exo_death100)
+    df1_srg350adjh = tbl_surge(erps, p_hrly, p_erp_expo350_adjh, p_exo_death350)
+    df1_srg750adjh = tbl_surge(erps, p_hrly, p_erp_expo750_adjh, p_exo_death750)
+
+    return df1_srg100strd, df1_srg350strd, df1_srg750strd, df1_srg100adjc, df1_srg350adjc, df1_srg750adjc, df1_srg100adjh, df1_srg350adjh, df1_srg750adjh
 
 
 
