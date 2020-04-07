@@ -82,3 +82,5 @@ class risk_cal(object):
         self.dfb1 = self.dfb1.drop(['P(hit)'], axis=1)
         return self.dfb1
 
+
+

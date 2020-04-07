@@ -18,7 +18,7 @@ class Test(TestCase): #run this test for elecitation = 1 and duration = 4
         df1 = table_vpt(pNo, bestG, Best_guessR, minG, maxG)
         df2 = table_stat_vpt(df1)
 
-        response = cal_vpt(df1,df2=df2,elc=1,du=4)
+        response = cal_vpt(df1,df2=df2,elc=1,du=0)
 
         self.assertEqual(first=response["P(eruption in period)"], second=0.300),
         self.assertEqual(first=response["P(no erupt. in period)"], second=0.700),

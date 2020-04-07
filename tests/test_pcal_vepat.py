@@ -12,14 +12,14 @@ class Testrisk_cal(TestCase):
 
     def setUp(self):
         self.dr = "geometric"
-        dfp1 = {'Bdia': [0.2, 0.3, 0.4],
-                'Pdia': [1, 1, 1],
-                'Sqln': [30, 30, 30],
-                'Area': [900, 900, 900],
-                'Phit_abv': [0.005026548, 0.005899213, 0.006841691],
-                'Phit_side': [0.04, 0.043333333, 0.046666667],
-                'Gmean': [0.014179631, 0.015988513, 0.017868377],
-                'P_hit': [0.014179631, 0.015988513, 0.017868377]}
+        dfp1 = {'Boulder diameter (m)': [0.2, 0.3, 0.4],
+                'Person diameter (m)': [1, 1, 1],
+                'Square length (m)': [30, 30, 30],
+                'Area (m^2)': [900, 900, 900],
+                'P(hit) Above': [0.005026548, 0.005899213, 0.006841691],
+                'P(hit) Side': [0.04, 0.043333333, 0.046666667],
+                'P(hit) Geometric mean': [0.014179631, 0.015988513, 0.017868377],
+                'P(hit)': [0.014179631, 0.015988513, 0.017868377]}
         self.d_test = pd.DataFrame(data=dfp1)
 
 
@@ -36,10 +36,9 @@ class Testrisk_cal(TestCase):
 
 
         df1 = utiv.table_phit()
-        erp_cals = utiv.cal_vpt(dff1, df2=dff2, elc=1, du=4)
-        df2 = utiv.ballistics_100m(erp_cals)
+        erp_cals = utiv.cal_vpt(dff1, df2=dff2, elc=1, du=0)
         p_test = risk_cal(self.dr)
-        p_test.load_dfs(df1, df2)
+        p_test.load_dfs(df1, df2=None)
         phit_tbl = p_test.phit_cal()
 
         #print(p_test.data)
