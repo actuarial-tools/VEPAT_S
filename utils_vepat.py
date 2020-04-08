@@ -40,7 +40,7 @@ class inputs:
             "Volcano": self.volcano,
             "Elicitation date": self.eldate,
             "Elicitation (day/s)": self.elc,
-            "duration (week/s": self.du
+            "duration (week/s)": self.du
         }
 
         return inps
@@ -313,4 +313,24 @@ def risk_dying_dicts(df2, df3, dis, obsp, calt, df1): #here dis = distance = 100
     return RDE
 
 
+def df_summary(dct0, dct100, dct350, dct750):
+    #get distance values
+    dis1 = dct100.get("Distance(m):", "")
+    dis2 = dct350.get("Distance(m):", "")
+    dis3 = dct750.get("Distance(m):", "")
 
+    rdh0 = dct0.get("P(eruption in hr)", "")
+    rdh1 = dct100.get("Total risk dying in hour:", "")
+    rdh2 = dct350.get("Total risk dying in hour:", "")
+    rdh3 = dct750.get("Total risk dying in hour:", "")
+
+    tb_final = {'Distance (m)': [0, dis1 , dis2, dis3],
+                'Risk dying in hour': [rdh0, rdh1, rdh2, rdh3]}
+    df_final = pd.DataFrame(data=tb_final)
+
+    #calculate slope and intercept
+    x1 = df_final['Distance (m)']
+    y1 = np.log(df_final['Risk dying in hour'])
+    m, c = np.polyfit(x1, y1, 1)
+
+    return df_final, round(m, 4), round(c, 4)
