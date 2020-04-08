@@ -18,15 +18,15 @@ class Test(TestCase): #run this test for elecitation = 1 and duration = 4
         df1 = table_vpt(pNo, bestG, Best_guessR, minG, maxG)
         df2 = table_stat_vpt(df1)
 
-        response = cal_vpt(df1,df2=df2,elc=1,du=0)
+        response = cal_vpt(df2=df2,elc=0,du=4)
 
         self.assertEqual(first=response["P(eruption in period)"], second=0.300),
         self.assertEqual(first=response["P(no erupt. in period)"], second=0.700),
-        self.assertEqual(first=response["P(no eruption in hr)"], second=0.985),
-        self.assertEqual(first=response["P(eruption in hr)"], second=0.0148),
-        self.assertEqual(first=response["P(small eruption in hr)"],second=0.0133),
-        self.assertEqual(first=response["P(moderate eruption in hr)"],second=0.00133),
-        self.assertEqual(first=response["P(large eruption in hr)"],second=0.000148)
+        self.assertEqual(first=response["P(no eruption in hr)"], second=0.999469),
+        self.assertEqual(first=response["P(eruption in hr)"], second=0.000530625),
+        self.assertEqual(first=response["P(small eruption in hr)"],second=0.000477563),
+        self.assertEqual(first=response["P(moderate eruption in hr)"],second=0.0000477563),
+        self.assertEqual(first=response["P(large eruption in hr)"],second=0.00000530625)
 
 
 

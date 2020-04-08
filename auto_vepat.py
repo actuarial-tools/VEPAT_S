@@ -7,17 +7,7 @@ from openpyxl import load_workbook
 import utils_vepat as utiv
 import pcal_vepat as pcals
 
-#dirDat = pathlib.Path('/home/sapthala/Projects19_20/VEPAT/From_Natalia')
-"""
-configure this according to the input data maybe store as a dataframe
 
-utive.excel_vpat(dirDat/'path the input datafram')
-
-d ={'Person': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
-    'Best guess': [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3],
-    'Min': [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05],
-    'Max': [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]}
-"""
 # Get Elicitation Inputs
 volcano = input("Volcano:")
 eldate= input("Elicitation date:")
@@ -29,27 +19,29 @@ if elc > 0:
 else:
     du = int(input("Duration (week/s):"))
 
-inputs = utiv.inputs(elc, du, volcano, eldate)
+# Get Elicitation Inputs:
+get_inps = utiv.inputs(elc, du, volcano, eldate)
+inputs = get_inps.inp_para()
 
 
-# create table based on the inputs
-df1 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
+#create table based on the inputs
+df0 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
 
-# calculate stats based on the table
-df2 = utiv.table_stat_vpt(df1)
+#calculate stats based on the table
+df00 = utiv.table_stat_vpt(df0)
 
-# calculations for plotting and other, calculations from this function saved as a dictionary
-erp_cals = utiv.cal_vpt(df1,df2,elc,du)
-
-# Table: Near Vent Processes
-near_vent = utiv.table_near_vent_proc(erp_cals)
+#calculations for plotting and other, calculations from this function saved as a dictionary
+erp_cals = utiv.cal_vpt(df00,elc,du)
 
 # P of death from one ballistics: tables & calculations
 phit = pcals.risk_cal.from_input()
 df1 = utiv.table_phit()
 phit.load_dfs(df1, df2=None)
 
-# Tables of Death from one ballistic: 0.2 m/0.3/0.4
+#Table: Near Vent Processes
+near_vent = utiv.table_near_vent_proc(erp_cals)
+
+#Tables of Death from one ballistic: 0.2 m/0.3/0.4
 phit_tbl = phit.phit_cal()
 
 #generate ballistics dfs with initial input parameters
@@ -76,16 +68,20 @@ df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh = utiv.table_surge(er
 #Standard calculation
 rde_100strd = utiv.risk_dying_dicts(ball_100m, df_srg100strd, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
 rde_350strd = utiv.risk_dying_dicts(ball_350m, df_srg350strd, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750strd = utiv.risk_dying_dicts(ball_750m, df_srg350strd, 750, "Factory", 'Standard Calculation', df1 = None)
+rde_750strd = utiv.risk_dying_dicts(ball_750m, df_srg750strd, 750, "Factory", 'Standard Calculation', df1 = None)
 
 #ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR
 rde_100adjc = utiv.risk_dying_dicts(ball_100m, df_srg100adjc, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
 rde_350adjc = utiv.risk_dying_dicts(ball_350m, df_srg350adjc, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750adjc = utiv.risk_dying_dicts(ball_750m, df_srg350adjc, 750, "Factory", 'Standard Calculation', df1 = None)
+rde_750adjc = utiv.risk_dying_dicts(ball_750m, df_srg750adjc, 750, "Factory", 'Standard Calculation', df1 = None)
 
 
 #ADJUSTED - HELICOPTER IN SOUTHERN SECTOR
 rde_100adjh = utiv.risk_dying_dicts(ball_100m, df_srg100adjh, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
 rde_350adjh = utiv.risk_dying_dicts(ball_350m, df_srg350adjh, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750adjh = utiv.risk_dying_dicts(ball_750m, df_srg350adjh, 750, "Factory", 'Standard Calculation', df1 = None)
+rde_750adjh = utiv.risk_dying_dicts(ball_750m, df_srg750adjh, 750, "Factory", 'Standard Calculation', df1 = None)
+
+
+
+
 

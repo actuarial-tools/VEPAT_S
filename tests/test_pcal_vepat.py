@@ -36,7 +36,6 @@ class Testrisk_cal(TestCase):
 
 
         df1 = utiv.table_phit()
-        erp_cals = utiv.cal_vpt(dff1, df2=dff2, elc=1, du=0)
         p_test = risk_cal(self.dr)
         p_test.load_dfs(df1, df2=None)
         phit_tbl = p_test.phit_cal()

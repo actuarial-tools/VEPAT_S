@@ -39,8 +39,8 @@ class inputs:
         inps = {
             "Volcano": self.volcano,
             "Elicitation date": self.eldate,
-            "Elicitation": self.elc,
-            "duration": self.du
+            "Elicitation (day/s)": self.elc,
+            "duration (week/s": self.du
         }
 
         return inps
@@ -90,7 +90,7 @@ def table_stat_vpt(dfd):
    
 #calculations necessary to produce tables and plots   
 #input parameters: dfd, d1_stat, elcitation, duration 
-def cal_vpt(df1, df2, elc, du):
+def cal_vpt(df2, elc, du):
     p_erup = df2.iloc[2]['Best Guess']  # P(eruption in period):
     p_Nerup = 1 - p_erup  # P(no erupt. in period):
 
@@ -117,11 +117,11 @@ def cal_vpt(df1, df2, elc, du):
     erp_cls = {
         "P(eruption in period)": p_erup,
               "P(no erupt. in period)": p_Nerup,
-              "P(no eruption in hr)": round(p_Neruphr, 3),
-              "P(eruption in hr)": round(p_eruphr, 4),
-              "P(small eruption in hr)": round(p_smleruphr, 4),
-              "P(moderate eruption in hr)": round(p_mderuphr,5),
-              "P(large eruption in hr)": round(p_lrgeruphr,6)
+              "P(no eruption in hr)": float(format(p_Neruphr, '.6g')), # format(val, '.6g') => give 6 significant digits
+              "P(eruption in hr)": float(format(p_eruphr, '.6g')),
+              "P(small eruption in hr)": float(format(p_smleruphr, '.6g')),
+              "P(moderate eruption in hr)": float(format(p_mderuphr, '.6g')),
+              "P(large eruption in hr)": float(format(p_lrgeruphr, '.6g'))
     }
 
     return erp_cls
@@ -302,12 +302,12 @@ def risk_dying_dicts(df2, df3, dis, obsp, calt, df1): #here dis = distance = 100
 
     RDE = {
         "Calculation:": calt,
-        "Distance(m):":dis,
-        "Site description:":obsp,
-        "Total risk dying in hour:": TRDE,
-        "Risk dying from small eruption in hour:": RDE_sml,
-        "Risk dying from moderate eruption in hour:": RDE_med,
-        "Risk dying from large eruption in hour:": RDE_lrg,
+        "Distance(m):": dis,
+        "Site description:": obsp,
+        "Total risk dying in hour:": float(format(TRDE, '.3g')),
+        "Risk dying from small eruption in hour:": float(format(RDE_sml, '.3g')),
+        "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.3g')),
+        "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.3g'))
     }
 
     return RDE
