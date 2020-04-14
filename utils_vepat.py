@@ -3,10 +3,9 @@
 import pandas as pd
 import numpy as np
 import math
-# import pathlib
-# import os, sys
-import pcal_vepat as pcals
-from copy import deepcopy
+import plotly.express as px
+import plotly.graph_objects as go
+
 
 # class inputs(object):
 #     def __init__(self, el, du):
@@ -334,3 +333,62 @@ def df_summary(dct0, dct100, dct350, dct750):
     m, c = np.polyfit(x1, y1, 1)
 
     return df_final, round(m, 4), round(c, 4)
+
+def summary_plots(df_s, dct_s, cal):
+    inp1 = dct_s.get("Volcano", "")
+    inp2 = dct_s.get("Elicitation date", "")
+    inp3 = int(dct_s.get("Elicitation (day/s)", ""))
+
+    if inp3 ==0:
+        inp3 = int(dct_s.get("duration (week/s)", ""))
+        inp3 = str(inp3) + " week/s"
+    else:
+        inp3 = str(inp3) + " day/s"
+
+
+    x1 = df_s['Distance (m)']
+    y1 = df_s['Risk dying in hour']
+    y2 = np.log(df_s['Risk dying in hour'])
+
+    trace1 = go.Scatter(
+        x=x1,
+        y=y1,
+        mode='markers',
+        name='Data')
+
+    # linear model
+    m, c = np.polyfit(x1, y2, 1)
+    #print(m,c)
+
+    # add the linear fit on top
+    trace0 = go.Scatter(
+        x=x1,
+        y=np.exp(m * x1 + c),
+        mode="lines",
+        marker=go.scatter.Marker(color='rgb(31, 119, 180)'),
+        name='Fit'
+    )
+
+    data = [trace0, trace1]
+    tit = inp1 + " risk (" + cal + " calc): valid " + inp2 + " for " + inp3
+    layout = go.Layout(
+        title=tit,
+        xaxis_title="Distance (m)",
+        yaxis_title="Hourly risk of dying from eruption",
+        yaxis_type="log",
+        yaxis=go.layout.YAxis(
+            dtick=1,
+            # tick0 = 0.0000001,
+            range=[-6, 0],
+            autorange=False,
+            showexponent='all',
+            exponentformat='E'
+        )
+    )
+
+    fig = go.Figure(
+        data=data,
+        layout=layout
+    )
+
+    fig.show()

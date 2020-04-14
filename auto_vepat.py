@@ -1,9 +1,5 @@
-import pathlib
-import os, sys
-import numpy as np
 import pandas as pd
-import math
-from openpyxl import load_workbook
+#from openpyxl import load_workbook
 import utils_vepat as utiv
 import pcal_vepat as pcals
 
@@ -39,7 +35,6 @@ df1 = utiv.table_phit()
 phit.load_dfs(df1, df2=None)
 
 #Table: Near Vent Processes
-pd.options.display.float_format = '{:.3g}'.format
 near_vent = utiv.table_near_vent_proc(erp_cals)
 
 #Tables of Death from one ballistic: 0.2 m/0.3/0.4
@@ -61,7 +56,6 @@ phit.load_dfs(df1, df750)
 ball_750m = phit.ballis_cal()
 
 #generate all the surge tables (9 tables)
-pd.options.display.float_format = '{:.3g}'.format
 df_srg100strd, df_srg350strd, df_srg750strd, df_srg100adjc, df_srg350adjc, \
 df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh = utiv.table_surge(erp_cals)
 
@@ -89,3 +83,8 @@ pd.options.display.float_format = '{:.3g}'.format
 summary_strd, slope_strd, yincp_strd = utiv.df_summary(erp_cals, rde_100strd, rde_350strd, rde_750strd)
 summary_adjc, slope_adjc, yincp_adjc = utiv.df_summary(erp_cals, rde_100adjc, rde_350adjc, rde_750adjc)
 summary_adjh, slope_adjh, yincp_adjh = utiv.df_summary(erp_cals, rde_100adjh, rde_350adjh, rde_750adjh)
+
+#generate summary plots
+utiv.summary_plots(summary_strd, inputs, 'Standard')
+utiv.summary_plots(summary_adjc, inputs, 'Adjusted for Crater floor')
+utiv.summary_plots(summary_adjh, inputs, 'Adjusted for Helicopter south. sector')
