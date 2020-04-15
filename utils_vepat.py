@@ -312,7 +312,7 @@ def risk_dying_dicts(df2, df3, dis, obsp, calt, df1): #here dis = distance = 100
     return RDE
 
 
-def df_summary(dct0, dct100, dct350, dct750):
+def df_summary(dct0, dct100, dct350, dct750, cal):
     #get distance values
     dis1 = dct100.get("Distance(m):", "")
     dis2 = dct350.get("Distance(m):", "")
@@ -332,7 +332,7 @@ def df_summary(dct0, dct100, dct350, dct750):
     y1 = np.log(df_final['Risk dying in hour'])
     m, c = np.polyfit(x1, y1, 1)
 
-    return df_final, round(m, 4), round(c, 4)
+    return df_final, round(m, 4), round(c, 4), cal
 
 def summary_plots(df_s, dct_s, cal):
     inp1 = dct_s.get("Volcano", "")
@@ -392,3 +392,36 @@ def summary_plots(df_s, dct_s, cal):
     )
 
     fig.show()
+#final risk zone table
+
+
+
+
+
+
+
+df1 = df_rz
+df2 = df_smry
+dff = pd.DataFrame([])
+# for index, row in df1.iterrows():
+#     hrf = row['Hourly risk of fatality']
+dff = pd.DataFrame([])
+for index, row in df2.iterrows():
+    # print(row)
+    col1 = row['cal type'] + ' (m)'
+    #     if col1 not in df1:
+    #         df1[col1] = [1,2,3]
+
+    val2 = float(row['yinc'])
+    val3 = float(row['slope'])
+
+    dfh = pd.DataFrame([])
+    for hrf in df1['Hourly risk of fatality']:
+        # print(hrf)
+        val1 = 10 * round(((np.log(float(hrf)) - val2) / val3) / 10, 0)
+        dfh = dfh.append(pd.DataFrame({col1: val1}, index=[0]), ignore_index=True)
+        list1 = dfh[col1].tolist()
+    print(list1)
+    dff[col1] = list1
+
+riskzn = df1.join(dff)

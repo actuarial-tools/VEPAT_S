@@ -80,9 +80,14 @@ rde_750adjh = utiv.risk_dying_dicts(ball_750m, df_srg750adjh, 750, "Factory", 'S
 
 #generate summary tables and calculations
 pd.options.display.float_format = '{:.3g}'.format
-summary_strd, slope_strd, yincp_strd = utiv.df_summary(erp_cals, rde_100strd, rde_350strd, rde_750strd)
-summary_adjc, slope_adjc, yincp_adjc = utiv.df_summary(erp_cals, rde_100adjc, rde_350adjc, rde_750adjc)
-summary_adjh, slope_adjh, yincp_adjh = utiv.df_summary(erp_cals, rde_100adjh, rde_350adjh, rde_750adjh)
+summary_strd, slope_strd, yincp_strd, type = utiv.df_summary(erp_cals, rde_100strd, rde_350strd, rde_750strd, 'Standard')
+summary_adjc, slope_adjc, yincp_adjc, type = utiv.df_summary(erp_cals, rde_100adjc, rde_350adjc, rde_750adjc, 'Adjusted for Crater floor')
+summary_adjh, slope_adjh, yincp_adjh, type = utiv.df_summary(erp_cals, rde_100adjh, rde_350adjh, rde_750adjh, 'Adjusted for Helicopter south. sector')
+
+tb_smry = {'cal type': [cal_strd, cal_adjc ,cal_adjh],
+           'slope': [slope_strd, slope_adjc, slope_adjh],
+            'yinc':[yincp_strd, yincp_adjc, yincp_adjh ]}
+df_smry = pd.DataFrame(data=tb_smry)
 
 #generate summary plots
 utiv.summary_plots(summary_strd, inputs, 'Standard')
