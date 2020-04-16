@@ -26,7 +26,8 @@ cal_type3 = 'Adjusted for Helicopter south. sector' #if no need to calcalate lea
 
 
 #create table based on the inputs
-df0 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
+#df0 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
+df0 = utiv.table_vpt()
 
 #calculate stats based on the table
 df00 = utiv.table_stat_vpt(df0)
