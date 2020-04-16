@@ -1,5 +1,4 @@
 import pandas as pd
-#from openpyxl import load_workbook
 import utils_vepat as utiv
 import pcal_vepat as pcals
 
@@ -18,6 +17,12 @@ else:
 # Get Elicitation Inputs:
 get_inps = utiv.inputs(elc, du, volcano, eldate)
 inputs = get_inps.inp_para()
+
+
+# Calculation types (This can be modified depebding the claculation types for different volcanoes)
+cal_type1 = 'Standard'
+cal_type2 = 'Adjusted for Crater floor' #if no need to calcalate leave empty
+cal_type3 = 'Adjusted for Helicopter south. sector' #if no need to calcalate leave empty
 
 
 #create table based on the inputs
@@ -61,35 +66,43 @@ df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh = utiv.table_surge(er
 
 ##risk of dying in an eruption (rde) calculations:
 #inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type
-#Standard calculation
-rde_100strd = utiv.risk_dying_dicts(ball_100m, df_srg100strd, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
-rde_350strd = utiv.risk_dying_dicts(ball_350m, df_srg350strd, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750strd = utiv.risk_dying_dicts(ball_750m, df_srg750strd, 750, "Factory", 'Standard Calculation', df1 = None)
+#cal_type1 calculation
+rde_100strd = utiv.risk_dying_dicts(ball_100m, df_srg100strd, 100, "Overlooking lake", cal_type1, df1 = near_vent)
+rde_350strd = utiv.risk_dying_dicts(ball_350m, df_srg350strd, 350, "Fumerole 0", cal_type1, df1 = None)
+rde_750strd = utiv.risk_dying_dicts(ball_750m, df_srg750strd, 750, "Factory", cal_type1, df1 = None)
 
 #ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR
-rde_100adjc = utiv.risk_dying_dicts(ball_100m, df_srg100adjc, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
-rde_350adjc = utiv.risk_dying_dicts(ball_350m, df_srg350adjc, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750adjc = utiv.risk_dying_dicts(ball_750m, df_srg750adjc, 750, "Factory", 'Standard Calculation', df1 = None)
+rde_100adjc = utiv.risk_dying_dicts(ball_100m, df_srg100adjc, 100, "Overlooking lake", cal_type2, df1 = near_vent)
+rde_350adjc = utiv.risk_dying_dicts(ball_350m, df_srg350adjc, 350, "Fumerole 0", cal_type2, df1 = None)
+rde_750adjc = utiv.risk_dying_dicts(ball_750m, df_srg750adjc, 750, "Factory", cal_type2, df1 = None)
 
 
 #ADJUSTED - HELICOPTER IN SOUTHERN SECTOR
-rde_100adjh = utiv.risk_dying_dicts(ball_100m, df_srg100adjh, 100, "Overlooking lake", 'Standard Calculation', df1 = near_vent)
-rde_350adjh = utiv.risk_dying_dicts(ball_350m, df_srg350adjh, 350, "Fumerole 0", 'Standard Calculation', df1 = None)
-rde_750adjh = utiv.risk_dying_dicts(ball_750m, df_srg750adjh, 750, "Factory", 'Standard Calculation', df1 = None)
+rde_100adjh = utiv.risk_dying_dicts(ball_100m, df_srg100adjh, 100, "Overlooking lake", cal_type3, df1 = near_vent)
+rde_350adjh = utiv.risk_dying_dicts(ball_350m, df_srg350adjh, 350, "Fumerole 0", cal_type3, df1 = None)
+rde_750adjh = utiv.risk_dying_dicts(ball_750m, df_srg750adjh, 750, "Factory", cal_type3, df1 = None)
 
 
 #generate summary tables and calculations
 pd.options.display.float_format = '{:.3g}'.format
-summary_strd, slope_strd, yincp_strd, type = utiv.df_summary(erp_cals, rde_100strd, rde_350strd, rde_750strd, 'Standard')
-summary_adjc, slope_adjc, yincp_adjc, type = utiv.df_summary(erp_cals, rde_100adjc, rde_350adjc, rde_750adjc, 'Adjusted for Crater floor')
-summary_adjh, slope_adjh, yincp_adjh, type = utiv.df_summary(erp_cals, rde_100adjh, rde_350adjh, rde_750adjh, 'Adjusted for Helicopter south. sector')
+summary_strd, slope_strd, yincp_strd, cal_strd = utiv.df_summary(erp_cals, rde_100strd, rde_350strd, rde_750strd, cal_type1)
+summary_adjc, slope_adjc, yincp_adjc, cal_adjc = utiv.df_summary(erp_cals, rde_100adjc, rde_350adjc, rde_750adjc, cal_type2)
+summary_adjh, slope_adjh, yincp_adjh, cal_adjh = utiv.df_summary(erp_cals, rde_100adjh, rde_350adjh, rde_750adjh, cal_type3)
+
+
+
+#generate plots
+utiv.summary_plots(summary_strd, inputs, cal_type1)
+utiv.summary_plots(summary_adjc, inputs, cal_type2)
+utiv.summary_plots(summary_adjh, inputs, cal_type3)
+
+
+#Genrate summary table with slopes, intercepts and calculation type
 
 tb_smry = {'cal type': [cal_strd, cal_adjc ,cal_adjh],
            'slope': [slope_strd, slope_adjc, slope_adjh],
             'yinc':[yincp_strd, yincp_adjc, yincp_adjh ]}
 df_smry = pd.DataFrame(data=tb_smry)
 
-#generate summary plots
-utiv.summary_plots(summary_strd, inputs, 'Standard')
-utiv.summary_plots(summary_adjc, inputs, 'Adjusted for Crater floor')
-utiv.summary_plots(summary_adjh, inputs, 'Adjusted for Helicopter south. sector')
+#Generate final risk zone table
+riskzn = utiv.riskzn(df_smry)
