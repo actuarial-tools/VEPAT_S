@@ -93,9 +93,16 @@ summary_adjh, slope_adjh, yincp_adjh, cal_adjh = utiv.df_summary(erp_cals, rde_1
 
 
 #generate plots
+#elicitation statistics plot
+utiv.elici_plot(inputs, df0, df00)
+
+#elecitation statistics plot
+utiv.elici_plot(inputs, df0, df00)
+#risk summary plots
 utiv.summary_plots(summary_strd, inputs, cal_type1)
 utiv.summary_plots(summary_adjc, inputs, cal_type2)
 utiv.summary_plots(summary_adjh, inputs, cal_type3)
+
 
 
 #Genrate summary table with slopes, intercepts and calculation type

@@ -334,6 +334,7 @@ def df_summary(dct0, dct100, dct350, dct750, cal):
 
     return df_final, round(m, 6), round(c, 6), cal
 
+
 def summary_plots(df_s, dct_s, cal):
     inp1 = dct_s.get("Volcano", "")
     inp2 = dct_s.get("Elicitation date", "")
@@ -392,6 +393,69 @@ def summary_plots(df_s, dct_s, cal):
     )
 
     fig.show()
+
+def elici_plot(dct_s, df0, df00):
+    inp1 = dct_s.get("Volcano", "")
+    inp2 = dct_s.get("Elicitation date", "")
+    inp3 = int(dct_s.get("Elicitation (day/s)", ""))
+
+    if inp3 ==0:
+        inp3 = int(dct_s.get("duration (week/s)", ""))
+        inp3 = str(inp3) + " week/s"
+    else:
+        inp3 = str(inp3) + " day/s"
+
+    x1 = df0['Best guess']
+    y1 = df0['Person']
+    x_erm = df0['Error low']
+    x_erh = df0['Error high']
+
+    trace1 = go.Scatter(
+        x=x1,
+        y=y1,
+        mode='markers',
+        error_x=dict(
+            type='data',
+            symmetric=False,
+            array=x_erh,
+            arrayminus=x_erm,
+            thickness=0.6,
+        ))
+
+    # trace0 = go.Scatter(
+    #     x=x1,
+    #     y=np.exp(m * x1 + c),
+    #     mode="lines",
+    #     marker=go.scatter.Marker(color='rgb(31, 119, 180)'),
+    #     name='Fit'
+    # )
+
+    data = [trace1]
+    tit = inp1 + " eruption within next " + inp3 + " (" + inp2 + ")"
+    layout = go.Layout(
+        title=tit,
+        xaxis_title="Best guess",
+        yaxis_title="Person",
+        xaxis=go.layout.XAxis(
+            dtick=0.1,
+            autorange=True
+        ),
+        yaxis=go.layout.YAxis(
+            dtick=1,
+            autorange=True
+        )
+    )
+
+    fig1 = go.Figure(
+        data=data,
+        layout=layout
+    )
+
+    fig1.show()
+
+
+
+
 
 #final risk zone table
 def riskzn(df2):
