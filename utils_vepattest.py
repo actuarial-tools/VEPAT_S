@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import math
 import plotly.express as px
+import config as cnfg
 import plotly.graph_objects as go
 
 
@@ -45,26 +46,16 @@ class inputs:
         return inps
 
 
-#create table based on the inputs
+# create table based on the inputs
 def table_vpt():
-    pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
-    Best_guessR = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
-    minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
-    maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
-
-    d1 = {'Person': pNo,
-          'Best guess': bestG,
-          'Best guess rep': Best_guessR,
-          'Min': minG,
-          'Max': maxG}
+    d1 = cnfg.config_whtislnd().elici_inputs()
     dfd = pd.DataFrame(data=d1)
     dfd['Error low'] = dfd['Best guess'] - dfd['Min']
     dfd['Error high'] = dfd['Max'] - dfd['Best guess']
-
     return dfd
 
-#calculate stats based on the table
+
+# calculate stats based on the table
 
 def table_stat_vpt(dfd):
     mean_bestG = dfd['Best guess'].mean()
@@ -86,9 +77,10 @@ def table_stat_vpt(dfd):
           'Max': [mean_max, median_max, ""]}
     d1_stat = pd.DataFrame(data=d2)
     return d1_stat
-   
-#calculations necessary to produce tables and plots   
-#input parameters: dfd, d1_stat, elcitation, duration 
+
+
+# calculations necessary to produce tables and plots
+# input parameters: dfd, d1_stat, elcitation, duration
 def cal_vpt(df2, elc, du):
     p_erup = df2.iloc[2]['Best Guess']  # P(eruption in period):
     p_Nerup = 1 - p_erup  # P(no erupt. in period):
@@ -112,15 +104,14 @@ def cal_vpt(df2, elc, du):
     p_mderuphr = (p_eruphr / 10) - p_lrgeruphr
     p_smleruphr = p_eruphr - p_mderuphr - p_lrgeruphr
 
-
     erp_cls = {
         "P(eruption in period)": p_erup,
-              "P(no erupt. in period)": p_Nerup,
-              "P(no eruption in hr)": float(format(p_Neruphr, '.6g')), # format(val, '.6g') => give 6 significant digits
-              "P(eruption in hr)": float(format(p_eruphr, '.6g')),
-              "P(small eruption in hr)": float(format(p_smleruphr, '.6g')),
-              "P(moderate eruption in hr)": float(format(p_mderuphr, '.6g')),
-              "P(large eruption in hr)": float(format(p_lrgeruphr, '.6g'))
+        "P(no erupt. in period)": p_Nerup,
+        "P(no eruption in hr)": float(format(p_Neruphr, '.6g')),  # format(val, '.6g') => give 6 significant digits
+        "P(eruption in hr)": float(format(p_eruphr, '.6g')),
+        "P(small eruption in hr)": float(format(p_smleruphr, '.6g')),
+        "P(moderate eruption in hr)": float(format(p_mderuphr, '.6g')),
+        "P(large eruption in hr)": float(format(p_lrgeruphr, '.6g'))
     }
 
     return erp_cls
@@ -129,66 +120,75 @@ def cal_vpt(df2, elc, du):
 ###############tables involve with total risk of dying in hour##############
 # initial table with ballistic information, this is used by pcal_vepat for calculating probability of hit
 def table_phit():
-    ball_dia = [0.2, 0.3, 0.4]
-    person_dia = [1, 1, 1]
-    sq_lng = [30, 30, 30]
-
-    d1 = {'Bdia': ball_dia,
-          'Pdia': person_dia,
-          'Sqln': sq_lng}
+    d1 = cnfg.config_whtislnd().phit_inputs()
     df1 = pd.DataFrame(data=d1)
-
     return df1
 
-#function to extract values from dictionary: erp_cls
+
+# function to extract values from dictionary: erp_cls
 def get_p_hourly(dct1):
-    #getting P(hourly) from erp_cls
+    # getting P(hourly) from erp_cls
     p_small = dct1.get("P(small eruption in hr)", "")
     p_mod = dct1.get("P(moderate eruption in hr)", "")
     p_lrg = dct1.get("P(large eruption in hr)", "")
     return p_small, p_mod, p_lrg
 
 
-def tbl_ballis(dct1,lst1,lst2,lst3):
-    df_ballp = {'Eruption size': dct1,
-                    'P(hourly)': lst1,
-                    'Ballistic diameter (m)': lst2,
-                    # BRA:Given eruption, # ballistics in reference area
-                    'Given eruption, # ballistics in reference area': lst3}
-    # 'P(given eruption, death from ballistics)': p_erp_death_ball}
-    df_bp = pd.DataFrame(data=df_ballp)
-    return df_bp
+def tbl_surge(dct1, lst1, lst2, lst3):
+    tb1 = {'Eruption size': dct1,
+           'P(hourly)': lst1,
+           'P(given eruption, exposure to surge)': lst2,
+           'P(given exposure, death from surge)': lst3}
+    tb1_p = pd.DataFrame(data=tb1)
+    tb1_p['P(given eruption, death from surge)'] = tb1_p['P(given eruption, exposure to surge)'] * tb1_p[
+        'P(given exposure, death from surge)']
+    tb1_p['P(death from surge in hr)'] = tb1_p['P(hourly)'] * tb1_p['P(given eruption, death from surge)']
+
+    return tb1_p
 
 
-
-
-
-#create table: NEAR VENT PROCESSES (WATER SPOUTS, LANDSLIDES, SHOCK/PRESSURE WAVES, DENSE SLUGS, ETC.)
-#the same table is used for in the Standard calculation, ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR, and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR
+# create table: NEAR VENT PROCESSES (WATER SPOUTS, LANDSLIDES, SHOCK/PRESSURE WAVES, DENSE SLUGS, ETC.)
+# the same table is used for in the Standard calculation, ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR, and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR
 
 def table_near_vent_proc(dct1):
-    #getting P(hourly) from erp_cls
+    # getting P(hourly) from erp_cls
     p_small = get_p_hourly(dct1)[0]
     p_mod = get_p_hourly(dct1)[1]
     p_lrg = get_p_hourly(dct1)[2]
 
-    erps = ["Small","Moderate","Large"]
+    erps = ["Small", "Moderate", "Large"]
     p_hrly = [p_small, p_mod, p_lrg]
-    p_erp_expo = [0, 0.1, 1]
-    p_exo_death = [0.9, 0.9, 1]
+
+    probls = cnfg.config_whtislnd().near_vent_p()
+    #print(probls)
+    # Ballistic diameter (m)
+    p_erp_expo = probls.get("pex", "")
+    p_exo_death = probls.get("ped", "")
+
 
     df_nvp = {'Eruption size': erps,
               'P(hourly)': p_hrly,
               'P(given eruption, exposure to near vent processes)': p_erp_expo,
               'P(given exposure, death from near vent processes)': p_exo_death}
     table_nvp = pd.DataFrame(data=df_nvp)
-    table_nvp['P(given eruption, death from near vent processes)'] = table_nvp[ 'P(given eruption, exposure to near vent processes)'] * table_nvp['P(given exposure, death from near vent processes)']
-    table_nvp['P(death from near vent processes in hr)'] = table_nvp['P(hourly)'] * table_nvp['P(given eruption, death from near vent processes)']
+    table_nvp['P(given eruption, death from near vent processes)'] = table_nvp['P(given eruption, exposure to near vent processes)'] * table_nvp['P(given exposure, death from near vent processes)']
+    table_nvp['P(death from near vent processes in hr)'] = table_nvp['P(hourly)'] * table_nvp[
+        'P(given eruption, death from near vent processes)']
 
     return table_nvp
 
 
-#Generate table for Ballistics, need 3 different tables for Distance = 100 m/350 m and 750 m
+# Generate table for Ballistics, need 3 different tables for Distance = 100 m/350 m and 750 m
+def tbl_ballis(dct1, lst1, lst2, lst3):
+    df_ballp = {'Eruption size': dct1,
+                'P(hourly)': lst1,
+                'Ballistic diameter (m)': lst2,
+                # BRA:Given eruption, # ballistics in reference area
+                'Given eruption, # ballistics in reference area': lst3}
+    # 'P(given eruption, death from ballistics)': p_erp_death_ball}
+    df_bp = pd.DataFrame(data=df_ballp)
+    return df_bp
+
 def table_ballis(dct1):
     # getting P(hourly) from erp_cls
     p_small = get_p_hourly(dct1)[0]
@@ -198,83 +198,79 @@ def table_ballis(dct1):
     erps = ["Small", "Moderate", "Large"]
     p_hrly = [p_small, p_mod, p_lrg]
 
-    #Ballistic diameter (m)
-    ball_dia100 = [0.3, 0.3, 0.3]
-    ball_dia350 = [0.2, 0.3, 0.3]
-    ball_dia750 = [0, 0.2, 0.3]
+    bpara = cnfg.config_whtislnd().ballistic_area_dis()
+    #print(bpara)
+    # Ballistic diameter (m)
+    ball_dia1 = bpara.get("bdia1", "")
+    ball_dia2 = bpara.get("bdia2", "")
+    ball_dia3 = bpara.get("bdia3", "")
 
-   #Given eruption, # ballistics in reference area
-    ball_area100 = [5, 50, 200]
-    ball_area350 = [0.1, 10, 100]
-    ball_area750 = [0, 5, 10]
+    # Given eruption, # ballistics in reference area
+    ball_no1 = bpara.get("bn1", "")
+    ball_no2 = bpara.get("bn1", "")
+    ball_no3 = bpara.get("bn1", "")
 
-    df_ballis100 = tbl_ballis(erps, p_hrly, ball_dia100, ball_area100)
-    df_ballis350 = tbl_ballis(erps, p_hrly, ball_dia350, ball_area350)
-    df_ballis750 = tbl_ballis(erps, p_hrly, ball_dia750, ball_area750)
+    df_ballis1 = tbl_ballis(erps, p_hrly, ball_dia1, ball_no1)
+    df_ballis2 = tbl_ballis(erps, p_hrly, ball_dia2, ball_no2)
+    df_ballis3 = tbl_ballis(erps, p_hrly, ball_dia3, ball_no3)
 
-    return df_ballis100, df_ballis350, df_ballis750
+    return df_ballis1, df_ballis2, df_ballis3
 
 
-#SURGE: 100m/350m/750m/ for standard, adjusted crator floor and helicopter in southern sector
-
-def tbl_surge(dct1,lst1,lst2,lst3):
-    tb1 = {'Eruption size': dct1,
-                  'P(hourly)': lst1,
-                  'P(given eruption, exposure to surge)': lst2,
-                  'P(given exposure, death from surge)': lst3}
-    tb1_p = pd.DataFrame(data=tb1)
-    tb1_p['P(given eruption, death from surge)'] = tb1_p['P(given eruption, exposure to surge)'] * tb1_p['P(given exposure, death from surge)']
-    tb1_p['P(death from surge in hr)'] = tb1_p['P(hourly)'] * tb1_p['P(given eruption, death from surge)']
-
-    return tb1_p
+# SURGE: 100m/350m/750m/ for standard, adjusted crator floor and helicopter in southern sector
 
 def table_surge(dct1):
-    #getting P(hourly) from erp_cls
+    # getting P(hourly) from erp_cls
     p_small = get_p_hourly(dct1)[0]
     p_mod = get_p_hourly(dct1)[1]
     p_lrg = get_p_hourly(dct1)[2]
 
-    erps = ["Small","Moderate","Large"]
+    erps = ["Small", "Moderate", "Large"]
     p_hrly = [p_small, p_mod, p_lrg]
 
-    #P(given eruption, exposure to surge) at 100, 350 and 750m distance for STANDARD CALCULATION (strd),
-    #ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
-    #strd
-    p_erp_expo100_strd = [0.01, 0.3, 0.4]
-    p_erp_expo350_strd = [0, 0.3, 0.4]
-    p_erp_expo750_strd = [0, 0.2, 0.4]
-    #adjc
-    p_erp_expo100_adjc = [1, 1, 1]
-    p_erp_expo350_adjc = [0.5, 1, 1]
-    p_erp_expo750_adjc = [0, 1, 1]
-    #adjh
-    p_erp_expo100_adjh = [1, 1, 1]
-    p_erp_expo350_adjh = [0, 0.3, 1]
-    p_erp_expo750_adjh = [0, 0.05, 1]
+    srg_para = cnfg.config_whtislnd().surge_paras()
 
-   #P(given exposure, death from surge) at 100m, 350m and 750m distances
-    p_exo_death100 = [0.95, 1, 1]
-    p_exo_death350 = [0.95, 0.95, 1]
-    p_exo_death750 = [0.95, 0.95, 0.95]
 
-    #generate all 9 tables:
-    df_srg100strd = tbl_surge(erps, p_hrly, p_erp_expo100_strd, p_exo_death100)
-    df_srg350strd = tbl_surge(erps, p_hrly, p_erp_expo350_strd, p_exo_death350)
-    df_srg750strd = tbl_surge(erps, p_hrly, p_erp_expo750_strd, p_exo_death750)
+    # P(given eruption, exposure to surge) at 100, 350 and 750m distance for STANDARD CALCULATION (strd),
+    # ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
+    # strd
+    p_esx_dis1str = srg_para.get("p_esx_dis1str", "")
+    p_esx_dis2str = srg_para.get("p_esx_dis2str", "")
+    p_esx_dis3str = srg_para.get("p_esx_dis3str", "")
 
-    df_srg100adjc = tbl_surge(erps, p_hrly, p_erp_expo100_adjc, p_exo_death100)
-    df_srg350adjc = tbl_surge(erps, p_hrly, p_erp_expo350_adjc, p_exo_death350)
-    df_srg750adjc = tbl_surge(erps, p_hrly, p_erp_expo750_adjc, p_exo_death750)
+    # adjc
+    p_esx_dis1adjc = srg_para.get("p_esx_dis1adjc", "")
+    p_esx_dis2adjc = srg_para.get("p_esx_dis2adjc", "")
+    p_esx_dis3adjc = srg_para.get("p_esx_dis3adjc", "")
 
-    df_srg100adjh = tbl_surge(erps, p_hrly, p_erp_expo100_adjh, p_exo_death100)
-    df_srg350adjh = tbl_surge(erps, p_hrly, p_erp_expo350_adjh, p_exo_death350)
-    df_srg750adjh = tbl_surge(erps, p_hrly, p_erp_expo750_adjh, p_exo_death750)
+    # adjh
+    p_esx_dis1adjh = srg_para.get("p_esx_dis1adjh", "")
+    p_esx_dis2adjh = srg_para.get("p_esx_dis2adjh", "")
+    p_esx_dis3adjh = srg_para.get("p_esx_dis3adjh", "")
 
-    return df_srg100strd, df_srg350strd, df_srg750strd, df_srg100adjc, df_srg350adjc, df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh
+    # P(given exposure, death from surge) at 100m, 350m and 750m distances
+    p_exd_dis1 = srg_para.get("p_exd_dis1", "")
+    p_exd_dis2 = srg_para.get("p_exd_dis2", "")
+    p_exd_dis3 = srg_para.get("p_exd_dis3", "")
+
+    # generate all 9 tables:
+    dis1strd = tbl_surge(erps, p_hrly, p_esx_dis1str, p_exd_dis1)
+    dis2strd = tbl_surge(erps, p_hrly, p_esx_dis2str, p_exd_dis2)
+    dis3strd = tbl_surge(erps, p_hrly, p_esx_dis3str, p_exd_dis3)
+
+    dis1adjc = tbl_surge(erps, p_hrly, p_esx_dis1adjc, p_exd_dis1)
+    dis2adjc = tbl_surge(erps, p_hrly, p_esx_dis2adjc, p_exd_dis2)
+    dis3adjc = tbl_surge(erps, p_hrly, p_esx_dis3adjc, p_exd_dis3)
+
+    dis1adjh = tbl_surge(erps, p_hrly, p_esx_dis1adjh, p_exd_dis1)
+    dis2adjh = tbl_surge(erps, p_hrly, p_esx_dis2adjh, p_exd_dis2)
+    dis3adjh = tbl_surge(erps, p_hrly, p_esx_dis3adjh, p_exd_dis3)
+
+    return dis1strd, dis2strd, dis3strd, dis1adjc, dis2adjc, dis3adjc, dis1adjh, dis2adjh, dis3adjh
 
 
 def risk_dying_cal(df2, df3, df1, val):
-    if isinstance(df1, pd.DataFrame): #check if the dataframe is None or not
+    if isinstance(df1, pd.DataFrame):  # check if the dataframe is None or not
         val1 = df2.iloc[val]['P(hourly)']
         val2 = df1.iloc[val]['P(given eruption, death from near vent processes)']
         val3 = df2.iloc[val]['P(given eruption, death from ballistics)']
@@ -288,18 +284,17 @@ def risk_dying_cal(df2, df3, df1, val):
     return RDE
 
 
-
-
-def risk_dying_dicts(df2, df3, dis, obsp, calt, df1): #here dis = distance = 100, 350, 750m depending on the input dfs/ obps: observation point/calt = calculation type
+def risk_dying_dicts(df2, df3, dis, obsp, calt,
+                     df1):  # here dis = distance = 100, 350, 750m depending on the input dfs/ obps: observation point/calt = calculation type
     for i in 0, 1, 2:
         if i == 0:
-            RDE_sml = risk_dying_cal(df2, df3, df1, val = i)
+            RDE_sml = risk_dying_cal(df2, df3, df1, val=i)
         elif i == 1:
-            RDE_med = risk_dying_cal(df2, df3, df1, val = i)
+            RDE_med = risk_dying_cal(df2, df3, df1, val=i)
         else:
-            RDE_lrg = risk_dying_cal(df2, df3, df1, val = i)
+            RDE_lrg = risk_dying_cal(df2, df3, df1, val=i)
 
-    TRDE = RDE_sml + RDE_med + RDE_lrg   #total risk of dying in hour
+    TRDE = RDE_sml + RDE_med + RDE_lrg  # total risk of dying in hour
 
     RDE = {
         "Calculation:": calt,
@@ -315,7 +310,7 @@ def risk_dying_dicts(df2, df3, dis, obsp, calt, df1): #here dis = distance = 100
 
 
 def df_summary(dct0, dct100, dct350, dct750, cal):
-    #get distance values
+    # get distance values
     dis1 = dct100.get("Distance(m):", "")
     dis2 = dct350.get("Distance(m):", "")
     dis3 = dct750.get("Distance(m):", "")
@@ -325,11 +320,11 @@ def df_summary(dct0, dct100, dct350, dct750, cal):
     rdh2 = dct350.get("Total risk dying in hour:", "")
     rdh3 = dct750.get("Total risk dying in hour:", "")
 
-    tb_final = {'Distance (m)': [0, dis1 , dis2, dis3],
+    tb_final = {'Distance (m)': [0, dis1, dis2, dis3],
                 'Risk dying in hour': [rdh0, rdh1, rdh2, rdh3]}
     df_final = pd.DataFrame(data=tb_final)
 
-    #calculate slope and intercept
+    # calculate slope and intercept
     x1 = df_final['Distance (m)']
     y1 = np.log(df_final['Risk dying in hour'])
     m, c = np.polyfit(x1, y1, 1)
@@ -342,12 +337,11 @@ def summary_plots(df_s, dct_s, cal):
     inp2 = dct_s.get("Elicitation date", "")
     inp3 = int(dct_s.get("Elicitation (day/s)", ""))
 
-    if inp3 ==0:
+    if inp3 == 0:
         inp3 = int(dct_s.get("duration (week/s)", ""))
         inp3 = str(inp3) + " week/s"
     else:
         inp3 = str(inp3) + " day/s"
-
 
     x1 = df_s['Distance (m)']
     y1 = df_s['Risk dying in hour']
@@ -361,7 +355,7 @@ def summary_plots(df_s, dct_s, cal):
 
     # linear model
     m, c = np.polyfit(x1, y2, 1)
-    #print(m,c)
+    # print(m,c)
 
     # add the linear fit on top
     trace0 = go.Scatter(
@@ -396,12 +390,13 @@ def summary_plots(df_s, dct_s, cal):
 
     fig.show()
 
+
 def elici_plot(dct_s, df0, df00):
     inp1 = dct_s.get("Volcano", "")
     inp2 = dct_s.get("Elicitation date", "")
     inp3 = int(dct_s.get("Elicitation (day/s)", ""))
 
-    if inp3 ==0:
+    if inp3 == 0:
         inp3 = int(dct_s.get("duration (week/s)", ""))
         inp3 = str(inp3) + " week/s"
     else:
@@ -456,12 +451,8 @@ def elici_plot(dct_s, df0, df00):
     fig1.show()
 
 
-
-
-
-#final risk zone table
+# final risk zone table
 def riskzn(df2):
-
     tb_riskzone = {'Hourly risk of fatality': [format(0.001, 'E'), format(0.0001, 'E'), format(0.00001, 'E')],
                    'GNS Staff access sign-off': ['Staff exclusion zone', 'GMS & VSA', 'VSA'],
                    }
