@@ -79,6 +79,7 @@ target/
 .ipynb
 #python scripts
 #utils_vepattest.py
+config.py
 
 # IPython
 profile_default/

@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import math
 import plotly.express as px
-import config as cnfg
+import volcano as vol
 import plotly.graph_objects as go
 
 
@@ -48,7 +48,7 @@ class inputs:
 
 # create table based on the inputs
 def table_vpt():
-    d1 = cnfg.config_whtislnd().elici_inputs()
+    d1 = vol.white_island().elici_inputs()
     dfd = pd.DataFrame(data=d1)
     dfd['Error low'] = dfd['Best guess'] - dfd['Min']
     dfd['Error high'] = dfd['Max'] - dfd['Best guess']
@@ -284,8 +284,7 @@ def risk_dying_cal(df2, df3, df1, val):
     return RDE
 
 
-def risk_dying_dicts(df2, df3, dis, obsp, calt,
-                     df1):  # here dis = distance = 100, 350, 750m depending on the input dfs/ obps: observation point/calt = calculation type
+def risk_dying_dicts(df2, df3, dis, obsp, calt, df1):  # here dis = distance = 100, 350, 750m depending on the input dfs/ obps: observation point/calt = calculation type
     for i in 0, 1, 2:
         if i == 0:
             RDE_sml = risk_dying_cal(df2, df3, df1, val=i)

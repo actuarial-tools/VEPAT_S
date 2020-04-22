@@ -1,40 +1,23 @@
-#config file for inout parameters:
+from volcano import volcano
+import pandas as pd
 
-class config_whtislnd():
+class white_island(volcano):
 
-    def __init__(self):
-        self.dc1 = None
-        self.dc2 = None
-        self.dc3 = None
-        self.dc4 = None
-        self.dc5 = None
-
-    #elicitation inputs
-    def elici_inputs(self):
-        pNo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        bestG = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
-        Best_guessR = [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3]
-        minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
-        maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
-
-        self.dc1 = {'Person': pNo,
-                     'Best guess': bestG,
-                     'Best guess rep': Best_guessR,
-                     'Min': minG,
-                     'Max': maxG}
-        return self.dc1
+    def __init__(self, elc, du, eldate, filename):
+        volcano = "WHAKAARI / WHITE ISLAND"
+        super().__init__(elc, du, volcano, eldate, filename)
 
     def phit_inputs(self):
-        ball_dia = [0.2, 0.3, 0.4] #ballistic diameter
-        person_dia = [1, 1, 1] #person diameter
-        sq_lng = [30, 30, 30] #square length
+        ball_dia = [0.2, 0.3, 0.4]  # ballistic diameter
+        person_dia = [1, 1, 1]  # person diameter
+        sq_lng = [30, 30, 30]  # square length
 
         self.dc2 = {'Bdia': ball_dia,
-              'Pdia': person_dia,
-              'Sqln': sq_lng}
+                    'Pdia': person_dia,
+                    'Sqln': sq_lng}
         return self.dc2
 
-    #ballistic parameters wrt distance
+    # ballistic parameters wrt distance
     # Note that dis1<dis2<dis3
     def ballistic_area_dis(self):
         # Ballistic diameter (m)
@@ -57,7 +40,7 @@ class config_whtislnd():
 
     def near_vent_p(self):
         pex = [0, 0.1, 1]  # P(given eruption, exposure to near vent processes)
-        ped = [0.9, 0.9, 1] #P (given exposure, death from near vent processes)
+        ped = [0.9, 0.9, 1]  # P (given exposure, death from near vent processes)
 
         self.dc4 = {'pex': pex,
                     'ped': ped}
@@ -98,5 +81,3 @@ class config_whtislnd():
                     'p_exd_dis3': p_exd_dis3
                     }
         return self.dc5
-
-

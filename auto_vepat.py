@@ -1,10 +1,13 @@
 import pandas as pd
+import volcano as vol
+import whiteIsland as wht
 import utils_vepat as utiv
 import pcal_vepat as pcals
 
 
 # Get Elicitation Inputs
 volcano = input("Volcano:")
+confg= input("Configuration file (JSON):") #config_whiteIsland.JSON
 eldate= input("Elicitation date:")
 print("Only enter one of Elicitation (days/s) or Duration (week/s), if non enter 0")
 
@@ -15,7 +18,7 @@ else:
     du = int(input("Duration (week/s):"))
 
 # Get Elicitation Inputs:
-get_inps = utiv.inputs(elc, du, volcano, eldate)
+get_inps = vol.volcano(elc, du, volcano, eldate, filename=confg)
 inputs = get_inps.inp_para()
 
 
@@ -27,7 +30,7 @@ cal_type3 = 'Adjusted for Helicopter south. sector' #if no need to calcalate lea
 
 #create table based on the inputs
 #df0 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
-df0 = utiv.table_vpt()
+df0 = vol.volcano(elc, du, volcano, eldate, filename=confg).table_vpt()
 
 #calculate stats based on the table
 df00 = utiv.table_stat_vpt(df0)
