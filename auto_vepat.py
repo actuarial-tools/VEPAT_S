@@ -38,7 +38,7 @@ df0 = get_inps.table_vpt()
 df00 =get_inps.table_stat_vpt()
 
 #calculations for plotting and other, calculations from this function saved as a dictionaryx
-erp_cals = utiv.cal_vpt(df00,elc,du)
+erp_cals = get_inps.cal_vpt()
 
 # P of death from one ballistics: tables & calculations
 phit = pcals.risk_cal.from_input()

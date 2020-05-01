@@ -46,12 +46,10 @@ class Testvolcano(TestCase):
         df_test = pandas.DataFrame(data=df1)
         assert_frame_equal(response, df_test, check_dtype=False)
 
-
     def test_table_stat_vpt(self):
         v = volcano(elc=0, du=4, volcano='WHAKAARI / WHITE ISLAND',
                     eldate='21 January 2020', filename='../config_whiteIsland.JSON')
-        df0 = v.table_vpt()
-        #v.load_df(df0)
+
         response = v.table_stat_vpt()
 
         df2 = {'Stat': ['Mean', 'Median', '84th percentile'],
@@ -61,3 +59,17 @@ class Testvolcano(TestCase):
         df2_test = pandas.DataFrame(data=df2)
         assert_frame_equal(response, df2_test, check_dtype=False)
 
+    def test_cal_vpt(self):
+        v = volcano(elc=0, du=4, volcano='WHAKAARI / WHITE ISLAND',
+                    eldate='21 January 2020', filename='../config_whiteIsland.JSON')
+
+
+        response = v.cal_vpt()
+
+        self.assertEqual(first=response["P(eruption in period)"], second=0.300),
+        self.assertEqual(first=response["P(no erupt. in period)"], second=0.700),
+        self.assertEqual(first=response["P(no eruption in hr)"], second=0.999469),
+        self.assertEqual(first=response["P(eruption in hr)"], second=0.000530625),
+        self.assertEqual(first=response["P(small eruption in hr)"], second=0.000477563),
+        self.assertEqual(first=response["P(moderate eruption in hr)"], second=0.0000477563),
+        self.assertEqual(first=response["P(large eruption in hr)"], second=0.00000530625)
