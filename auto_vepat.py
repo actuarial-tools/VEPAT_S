@@ -30,12 +30,14 @@ cal_type3 = 'Adjusted for Helicopter south. sector' #if no need to calcalate lea
 
 #create table based on the inputs
 #df0 = utiv.table_vpt('pNo', 'bestG', 'Best_guessR', 'minG', 'maxG')
-df0 = vol.volcano(elc, du, volcano, eldate, filename=confg).table_vpt()
+df0 = get_inps.table_vpt()
 
 #calculate stats based on the table
-df00 = utiv.table_stat_vpt(df0)
+#get_inps.load_df(df0)
+#df00 = get_inps.table_stat_vpt()
+df00 =get_inps.table_stat_vpt()
 
-#calculations for plotting and other, calculations from this function saved as a dictionary
+#calculations for plotting and other, calculations from this function saved as a dictionaryx
 erp_cals = utiv.cal_vpt(df00,elc,du)
 
 # P of death from one ballistics: tables & calculations

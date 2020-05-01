@@ -3,8 +3,7 @@ import pandas as pd
 
 class white_island(volcano):
 
-    def __init__(self, elc, du, eldate, filename):
-        volcano = "WHAKAARI / WHITE ISLAND"
+    def __init__(self, elc, du, eldate, filename,volcano):
         super().__init__(elc, du, volcano, eldate, filename)
 
     def phit_inputs(self):
