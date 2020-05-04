@@ -3,18 +3,10 @@ import pandas as pd
 
 class white_island(volcano):
 
-    def __init__(self, elc, du, eldate, filename,volcano):
+    def __init__(self, elc, du, eldate, filename, volcano):
         super().__init__(elc, du, volcano, eldate, filename)
 
-    def phit_inputs(self):
-        ball_dia = [0.2, 0.3, 0.4]  # ballistic diameter
-        person_dia = [1, 1, 1]  # person diameter
-        sq_lng = [30, 30, 30]  # square length
 
-        self.dc2 = {'Bdia': ball_dia,
-                    'Pdia': person_dia,
-                    'Sqln': sq_lng}
-        return self.dc2
 
     # ballistic parameters wrt distance
     # Note that dis1<dis2<dis3

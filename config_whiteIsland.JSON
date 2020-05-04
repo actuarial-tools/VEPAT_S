@@ -12,5 +12,11 @@
           "boulder diameter": [0.2, 0.3, 0.4],
           "person diameter": [1, 1, 1],
           "square length": [30, 30, 30]
+    },
+
+    "near_vent_inputs": {
+            "Eruption size": ["Small", "Moderate", "Large"],
+            "P(given eruption, exposure to near vent processes)": [0, 0.1, 1],
+            "P (given exposure, death from near vent processes)": [0.9, 0.9, 1]
     }
 }

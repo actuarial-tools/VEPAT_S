@@ -40,13 +40,13 @@ df00 =get_inps.table_stat_vpt()
 #calculations for plotting and other, calculations from this function saved as a dictionaryx
 erp_cals = get_inps.cal_vpt()
 
-# P of death from one ballistics: tables & calculations
-phit = pcals.risk_cal.from_input()
-df1 = utiv.table_phit()
-phit.load_dfs(df1, df2=None)
-
 #Table: Near Vent Processes
-near_vent = utiv.table_near_vent_proc(erp_cals)
+near_vent = get_inps.table_near_vent_proc()
+
+# P of death from one ballistics: tables & calculations
+phit = pcals.PcalsVepat.from_input()
+df1 = get_inps.table_phit()
+phit.load_dfs(df1, df2=None)
 
 #Tables of Death from one ballistic: 0.2 m/0.3/0.4
 phit_tbl = phit.phit_cal()
