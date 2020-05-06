@@ -11,6 +11,8 @@ class PcalsVepat(object):
         self.df1 = None
         self.dr = dr
         self.df2 = None
+        self.df3 = None
+        self.dfb1 = None
 
 
     def load_dfs(self, df1, df2):

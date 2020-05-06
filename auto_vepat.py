@@ -3,6 +3,8 @@ import volcano as vol
 import whiteIsland as wht
 import utils_vepat as utiv
 import pcal_vepat as pcals
+import whiteIsland as white
+
 
 
 # Get Elicitation Inputs
@@ -51,20 +53,30 @@ phit.load_dfs(df1, df2=None)
 #Tables of Death from one ballistic: 0.2 m/0.3/0.4
 phit_tbl = phit.phit_cal()
 
-#generate ballistics dfs with initial input parameters
-df100, df350, df750 = utiv.table_ballis(erp_cals)
+#do calculations based on thee volcano from here onwards
+#df100, df350, df750 = get_inps.volcano_cals()
 
-#ballistics 100m table for statnadrd, adjusted
-phit.load_dfs(df1, df100)
-ball_100m = phit.ballis_cal()
+if confg == "config_whiteIsland.JSON":
+    cng = white.white_island(du=du, elc=elc, eldate=eldate, filename=confg,
+                             volcano=volcano)
+    # generate ballistics dfs with initial input parameters
+    df100, df350, df750 = cng.table_ballis()
 
-#ballistics 350m table for statnadrd, adjusted
-phit.load_dfs(df1, df350)
-ball_350m = phit.ballis_cal()
+    # ballistics 100m table for statnadrd, adjusted
+    phit.load_dfs(df1, df100)
+    ball_100m = phit.ballis_cal()
 
-#ballistics 750m table for statnadrd, adjusted
-phit.load_dfs(df1, df750)
-ball_750m = phit.ballis_cal()
+    # ballistics 350m table for statnadrd, adjusted
+    phit.load_dfs(df1, df350)
+    ball_350m = phit.ballis_cal()
+
+    # ballistics 750m table for statnadrd, adjusted
+    phit.load_dfs(df1, df750)
+    ball_750m = phit.ballis_cal()
+
+
+
+
 
 #generate all the surge tables (9 tables)
 df_srg100strd, df_srg350strd, df_srg750strd, df_srg100adjc, df_srg350adjc, \

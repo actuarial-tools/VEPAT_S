@@ -18,5 +18,17 @@
             "Eruption size": ["Small", "Moderate", "Large"],
             "P(given eruption, exposure to near vent processes)": [0, 0.1, 1],
             "P (given exposure, death from near vent processes)": [0.9, 0.9, 1]
-    }
+    },
+
+    "Ballistics_inputs": {
+           "Ballistic diameter 100m": [0.3, 0.3, 0.3],
+           "Ballistic diameter 350m": [0.2, 0.3, 0.3],
+           "Ballistic diameter 750m": [0, 0.2, 0.3],
+           "no ballistics in reference area 100m": [5, 50, 200],
+           "no ballistics in reference area 350m": [0.1, 10, 100],
+            "no ballistics in reference area 750m": [0, 5, 10]
+      }
 }
+
+
+
