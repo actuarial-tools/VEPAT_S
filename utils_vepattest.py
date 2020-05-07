@@ -217,7 +217,7 @@ def table_ballis(dct1):
     return df_ballis1, df_ballis2, df_ballis3
 
 
-# SURGE: 100m/350m/750m/ for standard, adjusted crator floor and helicopter in southern sector
+# SURGE: 100m/350m/750m/ for standard, adjusted crater floor and helicopter in southern sector
 
 def table_surge(dct1):
     # getting P(hourly) from erp_cls

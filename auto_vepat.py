@@ -74,13 +74,18 @@ if confg == "config_whiteIsland.JSON":
     phit.load_dfs(df1, df750)
     ball_750m = phit.ballis_cal()
 
+    #generate all the surge tables (9 tables)
+    df_srg100strd, df_srg350strd, df_srg750strd, df_srg100adjc, df_srg350adjc, \
+    df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh = cng.table_surge()
+
+    ##risk of dying in an eruption (rde) calculations:
+    # inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type
+    # cal_type1 calculation
+    rde_100strd = utiv.risk_dying_dicts(ball_100m, df_srg100strd, 100, "Overlooking lake", cal_type1, df1=near_vent)
+    rde_350strd = utiv.risk_dying_dicts(ball_350m, df_srg350strd, 350, "Fumerole 0", cal_type1, df1=None)
+    rde_750strd = utiv.risk_dying_dicts(ball_750m, df_srg750strd, 750, "Factory", cal_type1, df1=None)
 
 
-
-
-#generate all the surge tables (9 tables)
-df_srg100strd, df_srg350strd, df_srg750strd, df_srg100adjc, df_srg350adjc, \
-df_srg750adjc, df_srg100adjh, df_srg350adjh, df_srg750adjh = utiv.table_surge(erp_cals)
 
 ##risk of dying in an eruption (rde) calculations:
 #inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type

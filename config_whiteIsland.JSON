@@ -24,11 +24,37 @@
            "Ballistic diameter 100m": [0.3, 0.3, 0.3],
            "Ballistic diameter 350m": [0.2, 0.3, 0.3],
            "Ballistic diameter 750m": [0, 0.2, 0.3],
+
            "no ballistics in reference area 100m": [5, 50, 200],
            "no ballistics in reference area 350m": [0.1, 10, 100],
             "no ballistics in reference area 750m": [0, 5, 10]
-      }
-}
+      },
 
+    "Surge_inputs": {
+
+         "P(given eruption, exposure to surge)_standard_100m": [0.01, 0.3, 0.4],
+         "P(given eruption, exposure to surge)_standard_350m": [0, 0.3, 0.4],
+         "P(given eruption, exposure to surge)_standard_750m": [0, 0.2, 0.4],
+
+         "P(given eruption, exposure to surge)_adjustedCrater_100m": [1, 1, 1],
+         "P(given eruption, exposure to surge)_adjustedCrater_350m": [0.5, 1, 1],
+         "P(given eruption, exposure to surge)_adjustedCrater_750m": [0, 1, 1],
+
+         "P(given eruption, exposure to surge)_adjustedHelicopter_100m": [1, 1, 1],
+         "P(given eruption, exposure to surge)_adjustedHelicopter_350m": [0, 0.3, 1],
+         "P(given eruption, exposure to surge)_adjustedHelicopter_750m": [0, 0.05, 1],
+
+         "P(given exposure, death from surge)_100m": [0.95, 1, 1],
+         "P(given exposure, death from surge)_350m": [0.95, 0.95, 1],
+         "P(given exposure, death from surge)_750m": [0.95, 0.95, 0.95]
+    },
+
+    "Caluculation_base_values": {
+       "calculation type":["Standard","Adjusted for Crater floor","Adjusted for Helicopter south. sector"],
+       "Distance": [100, 350, 750],
+       "Site location": ["Overlooking lake", "Fumerole 0", "Factory"]
+    }
+
+}
 
 

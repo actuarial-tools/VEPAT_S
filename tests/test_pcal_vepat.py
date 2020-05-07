@@ -52,11 +52,11 @@ class Testrisk_cal(TestCase):
 
         df_balls = {'Eruption size': ["Small", "Moderate", "Large"],
                   'P(hourly)': [0.000477563, 0.0000477563, 0.00000530625],
-                  'P(given eruption, exposure to near vent processes)': [0, 0.1, 1],
-                  'P(given exposure, death from near vent processes)': [0.9, 0.9, 1],
-                  'P(given eruption, death from near vent processes)': [0, 0.09, 1],
-                  'P(death from near vent processes in hr)': [0, 0.00000429807, 0.00000530625]}
-        ball_test = pandas.DataFrame(data=df_balls)
+                  'Ballistic diameter (m)': [0.3, 0.3, 0.3],
+                  'Given eruption, # ballistics in reference area': [5, 50, 200],
+                  'P(given eruption, death from ballistics)': [0.0774268, 0.553308, 0.960186],
+                  'P(death from ballistics in hr)': [0.00003697616873199321, 0.000026423931461547936, 0.000005094988026460348]}
+        ball_test = pd.DataFrame(data=df_balls)
         assert_frame_equal(response, ball_test, check_dtype=False)
 
 

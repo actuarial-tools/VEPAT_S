@@ -1,5 +1,8 @@
 from volcano import volcano
+from pcal_vepat import PcalsVepat
 import pandas as pd
+import numpy as np
+import math
 
 
 
@@ -9,16 +12,6 @@ class white_island(volcano):
         super().__init__(elc, du, volcano, eldate, filename)
 
 
-
-    def tbl_ballis(self, dct1, lst1, lst2, lst3):
-        df_ballp = {'Eruption size': dct1,
-                    'P(hourly)': lst1,
-                    'Ballistic diameter (m)': lst2,
-                    # BRA:Given eruption, # ballistics in reference area
-                    'Given eruption, # ballistics in reference area': lst3}
-        # 'P(given eruption, death from ballistics)': p_erp_death_ball}
-        df_bp = pd.DataFrame(data=df_ballp)
-        return df_bp
 
     def table_ballis(self):
         # getting P(hourly) from erp_cls
@@ -44,9 +37,87 @@ class white_island(volcano):
         self.df_ballis2 = self.tbl_ballis(erps, p_hrly, ball_dia2, ball_no2)
         self.df_ballis3 = self.tbl_ballis(erps, p_hrly, ball_dia3, ball_no3)
 
-
         return self.df_ballis1, self.df_ballis2, self.df_ballis3
-        #return erps, bpara, p_hrly
+
+    # SURGE: 100m/350m/750m/ for standard, adjusted crater floor and helicopter in southern sector
+
+    def table_surge(self):
+        # getting P(hourly) from erp_cls
+        p_small = self.erp_cls.get("P(small eruption in hr)", "")
+        p_mod = self.erp_cls.get("P(moderate eruption in hr)", "")
+        p_lrg = self.erp_cls.get("P(large eruption in hr)", "")
+
+        erps = self.volcanoConfigData['near_vent_inputs'].get("Eruption size", "")
+        p_hrly = [p_small, p_mod, p_lrg]
+
+        srg_para = self.volcanoConfigData["Surge_inputs"]
+
+        # P(given eruption, exposure to surge) at 100, 350 and 750m distance for STANDARD CALCULATION (strd),
+        # ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
+        # standard
+        p_esx_dis1str = srg_para.get("P(given eruption, exposure to surge)_standard_100m", "")
+        p_esx_dis2str = srg_para.get("P(given eruption, exposure to surge)_standard_350m", "")
+        p_esx_dis3str = srg_para.get("P(given eruption, exposure to surge)_standard_750m", "")
+
+        # adjusted crater
+        p_esx_dis1adjc = srg_para.get("P(given eruption, exposure to surge)_adjustedCrater_100m", "")
+        p_esx_dis2adjc = srg_para.get("P(given eruption, exposure to surge)_adjustedCrater_350m", "")
+        p_esx_dis3adjc = srg_para.get("P(given eruption, exposure to surge)_adjustedCrater_750m", "")
+        #
+        # adjusted helicopter
+        p_esx_dis1adjh = srg_para.get("P(given eruption, exposure to surge)_adjustedHelicopter_100m", "")
+        p_esx_dis2adjh = srg_para.get("P(given eruption, exposure to surge)_adjustedHelicopter_350m", "")
+        p_esx_dis3adjh = srg_para.get("P(given eruption, exposure to surge)_adjustedHelicopter_750m", "")
+
+        # P(given exposure, death from surge) at 100m, 350m and 750m distances
+        p_exd_dis1 = srg_para.get("P(given exposure, death from surge)_100m", "")
+        p_exd_dis2 = srg_para.get("P(given exposure, death from surge)_350m", "")
+        p_exd_dis3 = srg_para.get("P(given exposure, death from surge)_750m", "")
+
+        # generate all 9 tables:
+        self.dis1strd = self.tbl_surge(erps, p_hrly, p_esx_dis1str, p_exd_dis1)
+        self.dis2strd = self.tbl_surge(erps, p_hrly, p_esx_dis2str, p_exd_dis2)
+        self.dis3strd = self.tbl_surge(erps, p_hrly, p_esx_dis3str, p_exd_dis3)
+
+        self.dis1adjc = self.tbl_surge(erps, p_hrly, p_esx_dis1adjc, p_exd_dis1)
+        self.dis2adjc = self.tbl_surge(erps, p_hrly, p_esx_dis2adjc, p_exd_dis2)
+        self.dis3adjc = self.tbl_surge(erps, p_hrly, p_esx_dis3adjc, p_exd_dis3)
+
+        self.dis1adjh = self.tbl_surge(erps, p_hrly, p_esx_dis1adjh, p_exd_dis1)
+        self.dis2adjh = self.tbl_surge(erps, p_hrly, p_esx_dis2adjh, p_exd_dis2)
+        self.dis3adjh = self.tbl_surge(erps, p_hrly, p_esx_dis3adjh, p_exd_dis3)
+
+        return self.dis1strd, self.dis2strd, self.dis3strd, self.dis1adjc, self.dis2adjc, self.dis3adjc, self.dis1adjh, self.dis2adjh, self.dis3adjh
+
+
+
+    def risk_dying_dicts(self):  # here dis = distance = 100, 350, 750m depending on the input dfs/ obps: observation point/calt = calculation type
+        rde_100strd = utiv.risk_dying_dicts(self.ball_100m, self.dis1strd, 100, "Overlooking lake", cal_type1, df1=self.near_vent)
+
+        for i in 0, 1, 2:
+            if i == 0:
+                RDE_sml = self.risk_dying_cal(df2, df3, df1, val=i)
+            elif i == 1:
+                RDE_med = self.risk_dying_cal(df2, df3, df1, val=i)
+            else:
+                RDE_lrg = self.risk_dying_cal(df2, df3, df1, val=i)
+
+        TRDE = RDE_sml + RDE_med + RDE_lrg  # total risk of dying in hour
+
+        RDE = {
+            "Calculation:": calt,
+            "Distance(m):": dis,
+            "Site description:": obsp,
+            "Total risk dying in hour:": float(format(TRDE, '.3g')),
+            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.3g')),
+            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.3g')),
+            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.3g'))
+        }
+
+        return RDE
+
+
+
 
 
 
