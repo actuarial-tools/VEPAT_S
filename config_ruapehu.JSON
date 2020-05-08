@@ -1,0 +1,58 @@
+{
+      "elicitation_inputs": {
+
+                  "Person": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  "Best guess": [0.01, 0.02, 0.03, 0.03, 0.04, 0.04, 0.05, 0.07, 0.1],
+                  "Best guess repeat": [0.01, 0.02, 0.03, 0.03, 0.04, 0.04, 0.05, 0.07, 0.1],
+                  "Min": [0.005, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05],
+                  "Max": [0.05, 0.05, 0.05, 0.06, 0.06, 0.1, 0.075, 0.1, 0.2]
+      },
+
+    "phit_inputs": {
+          "boulder diameter": [0.1, 0.2, 0.3, 0.5, 0.8, 1],
+          "person diameter": [1, 1, 1, 1, 1, 1],
+          "square length": [30, 30, 30, 30, 30, 30]
+    },
+
+    "near_vent_inputs": {
+            "Eruption size": ["Size 3", "Size 4", "Size 5"],
+            "P(given eruption, exposure to near vent processes)": [1, 1, 1],
+            "P (given exposure, death from near vent processes)": [1,1, 1]
+    },
+
+    "Ballistics_inputs": {
+           "Ballistic diameter 0km": [0.5, 0.8, 1],
+           "Ballistic diameter 0.5km": [0.3, 0.5, 0.8],
+           "Ballistic diameter 1.3km": [0.1, 0.3, 0.5],
+
+           "no ballistics in reference area 0": [10, 30, 100],
+           "no ballistics in reference area 0.5km": [5, 20, 50],
+            "no ballistics in reference area 1.3km": [1, 10, 20]
+      },
+
+    "Surge_inputs": {
+
+         "P(given eruption, exposure to surge)_standard_0km": [0.01, 0.3, 0.4],
+         "P(given eruption, exposure to surge)_standard_0.5km": [0, 0.3, 0.4],
+         "P(given eruption, exposure to surge)_standard_750m": [0, 0.2, 0.4],
+
+         "P(given exposure, death from surge)_0km": [1, 1, 1],
+         "P(given exposure, death from surge)_0.5km": [0.95, 0.95, 1],
+         "P(given exposure, death from surge)_1.3km": [0.95, 0.95, 0.95]
+    },
+
+    "Base parameters": {
+       "calculation type":["Standard"],
+       "Distance": [0, 0.5, 1.3],
+       "Site location": ["Outlet", "Dome", "Matarangi station"]
+    },
+
+
+    "final_zone_estimate": {
+       "Hourly risk of fatality": [0.001, 0.0001, 0.00001],
+       "GNS Staff access sign-off": ["Staff exclusion zone", "GMS & VSA", "VSA"]
+    }
+
+}
+
+

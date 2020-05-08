@@ -452,7 +452,7 @@ def elici_plot(dct_s, df0, df00):
 
 # final risk zone table
 def riskzn(df2):
-    tb_riskzone = {'Hourly risk of fatality': [format(0.001, 'E'), format(0.0001, 'E'), format(0.00001, 'E')],
+    tb_riskzone = {'Hourly risk of fatality': ['{0:1.1E}'.format(0.001, 'E'), '{0:1.1E}'.format(0.0001, 'E'), '{0:1.1E}'.format(0.00001, 'E')],
                    'GNS Staff access sign-off': ['Staff exclusion zone', 'GMS & VSA', 'VSA'],
                    }
 
