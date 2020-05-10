@@ -170,33 +170,35 @@ class ruapehu(volcano):
 
         self.RDE = {
             "Calculation:": calt,
-            "Distance(m):": dis,
+            "Distance(km):": dis,
             "Site description:": obsp,
-            "Total risk dying in hour:": float(format(TRDE, '.3g')),
-            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.3g')),
-            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.3g')),
-            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.3g'))
+            "Total risk dying in hour:": float(format(TRDE, '.5g')),
+            "Risk dying from size3 eruption in hour:": float(format(RDE_sml, '.5g')),
+            "Risk dying from size4 eruption in hour:": float(format(RDE_med, '.5g')),
+            "Risk dying from size5 eruption in hour:": float(format(RDE_lrg, '.5g'))
         }
 
         return self.RDE
 
-    def df_summary(self, dct0, dct100, dct350, dct750, cal):
+    def df_summary(self, dctDis1, dctDis2, dctDis3, dctDis4, cal):
         # get distance values
-        dis1 = dct100.get("Distance(m):", "")
-        dis2 = dct350.get("Distance(m):", "")
-        dis3 = dct750.get("Distance(m):", "")
+        dis1 = dctDis1.get("Distance(km):", "")
+        dis2 = dctDis2.get("Distance(km):", "")
+        dis3 = dctDis3.get("Distance(km):", "")
+        dis4 = dctDis4.get("Distance(km):", "")
 
-        rdh0 = dct0.get("P(eruption in hr)", "")
-        rdh1 = dct100.get("Total risk dying in hour:", "")
-        rdh2 = dct350.get("Total risk dying in hour:", "")
-        rdh3 = dct750.get("Total risk dying in hour:", "")
+        #rdh0 = dctDis0.get("P(eruption in hr)", "")
+        rdh1 = dctDis1.get("Total risk dying in hour:", "")
+        rdh2 = dctDis2.get("Total risk dying in hour:", "")
+        rdh3 = dctDis3.get("Total risk dying in hour:", "")
+        rdh4 = dctDis4.get("Total risk dying in hour:", "")
 
-        tb_final = {'Distance (m)': [0, dis1, dis2, dis3],
-                    'Risk dying in hour': [rdh0, rdh1, rdh2, rdh3]}
+        tb_final = {'Distance (km)': [dis1, dis2, dis3, dis4],
+                    'Risk dying in hour': [rdh1, rdh2, rdh3,rdh4]}
         self.df_final = pd.DataFrame(data=tb_final)
 
         # calculate slope and intercept
-        x1 = self.df_final['Distance (m)']
+        x1 = self.df_final['Distance (km)']
         y1 = np.log(self.df_final['Risk dying in hour'])
         self.m, self.c = np.polyfit(x1, y1, 1)
 
@@ -213,7 +215,7 @@ class ruapehu(volcano):
         else:
             inp3 = str(inp3) + " day/s"
 
-        x1 = df_s['Distance (m)']
+        x1 = df_s['Distance (km)']
         y1 = df_s['Risk dying in hour']
         y2 = np.log(df_s['Risk dying in hour'])
 
@@ -273,7 +275,7 @@ class ruapehu(volcano):
         df1 = pd.DataFrame(data=tb_riskzone)
 
         for index, row in df2.iterrows():
-            col1 = row['cal type'] + ' (m)'
+            col1 = row['cal type'] + ' (km)'
             val2 = float(row['yinc'])
             val3 = float(row['slope'])
 

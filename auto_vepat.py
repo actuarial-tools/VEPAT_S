@@ -31,12 +31,12 @@ cal_type2 = base_para['calculation type'][1] #if no need to calcalate leave empt
 cal_type3 = base_para['calculation type'][2] #if no need to calcalate leave empty
 
 distance1 = base_para['Distance'][0]
-distance2 = base_para['Distance'][1] #if no need to calcalate leave empty
-distance3 = base_para['Distance'][2] #if no need to calcalate leave empty
+distance2 = base_para['Distance'][1]
+distance3 = base_para['Distance'][2]
 
 site1 = base_para['Site location'][0]
-site2 = base_para['Site location'][1] #if no need to calcalate leave empty
-site3 = base_para['Site location'][2] #if no need to calcalate leave empty
+site2 = base_para['Site location'][1]
+site3 = base_para['Site location'][2]
 
 
 #create table based on the inputs
@@ -174,13 +174,18 @@ if confg == "config_ruapehu.JSON":
     ##risk of dying in an eruption (rde) calculations:
     # inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type
     # cal_type1 calculation
+    # extra base parameters for Ruapehu
+    distance4 = base_para['Distance'][3]
+    site4 = base_para['Site location'][3]
+
     rde_Dis1strd = cng.risk_dying_dicts(ball_dis1, df_srgDis1strd, distance1, site1, cal_type1, df1=near_vent)
     rde_Dis2strd = cng.risk_dying_dicts(ball_dis2, df_srgDis2strd, distance2, site2, cal_type1, df1=None)
     rde_Dis3strd = cng.risk_dying_dicts(ball_dis3, df_srgDis3strd, distance3, site3, cal_type1, df1=None)
+    rde_Dis4strd = cng.risk_dying_dicts(ball_dis4, df_srgDis4strd, distance4, site4, cal_type1, df1=None)
 
     # generate summary tables and calculations
     pd.options.display.float_format = '{:.3g}'.format
-    summary_strd, slope_strd, yincp_strd, cal_strd = cng.df_summary(erp_cals, rde_Dis1strd, rde_Dis2strd, rde_Dis3strd, cal_type1)
+    summary_strd, slope_strd, yincp_strd, cal_strd = cng.df_summary(rde_Dis1strd, rde_Dis2strd, rde_Dis3strd, rde_Dis4strd, cal_type1)
 
     # generate volcano specific plots
     # risk summary plots
