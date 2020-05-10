@@ -11,14 +11,79 @@ class white_island(volcano):
 
     def __init__(self, elc, du, eldate, filename, volcano):
         super().__init__(elc, du, volcano, eldate, filename)
-        self.df1 = None
+        #self.df1 = None
+        self.erp_cls = self.cal_vpt()
+        self.table_nvp = self.table_near_vent_proc()
 
 
-    def load_table(self, df2):
-        self.df2 = df2
+    # def load_table(self, df2):
+    #     self.df2 = df2
+
+    def cal_vpt(self):
+        p_erup = self.df2.iloc[2]['Best Guess']  # P(eruption in period):
+        p_Nerup = 1 - p_erup  # P(no erupt. in period):
+
+        if self.elc > 0:
+            B6 = self.elc
+        else:
+            if self.du > 0:
+                B6 = self.du * 7
+            else:
+                B6 = -1
+
+        if B6 > 0:
+            B7 = B6 * 24  # days
+        else:
+            B7 = -1  # hours
+
+        p_Neruphr = math.pow(p_Nerup, 1 / B7)
+        p_eruphr = 1 - p_Neruphr
+        p_lrgeruphr = p_eruphr / 100
+        p_mderuphr = (p_eruphr / 10) - p_lrgeruphr
+        p_smleruphr = p_eruphr - p_mderuphr - p_lrgeruphr
+
+        self.erp_cls = {
+            "P(eruption in period)": p_erup,
+            "P(no erupt. in period)": p_Nerup,
+            "P(no eruption in hr)": float(format(p_Neruphr, '.6g')),  # format(val, '.6g') => give 6 significant digits
+            "P(eruption in hr)": float(format(p_eruphr, '.6g')),
+            "P(small eruption in hr)": float(format(p_smleruphr, '.6g')),
+            "P(moderate eruption in hr)": float(format(p_mderuphr, '.6g')),
+            "P(large eruption in hr)": float(format(p_lrgeruphr, '.6g'))
+        }
+
+        return self.erp_cls
 
 
+    # function to extract values from dictionary: erp_cls
+    # def get_p_hourly(self):
+    #     # getting P(hourly) from erp_cls
+    #     p_small = self.erp_cls.get("P(small eruption in hr)", "")
+    #     p_mod = self.erp_cls.get("P(moderate eruption in hr)", "")
+    #     p_lrg = self.erp_cls.get("P(large eruption in hr)", "")
+    #     return p_small, p_mod, p_lrg
 
+    def table_near_vent_proc(self):
+        # getting P(hourly) from erp_cls
+        p_small = self.erp_cls.get("P(small eruption in hr)", "")
+        p_mod = self.erp_cls.get("P(moderate eruption in hr)", "")
+        p_lrg = self.erp_cls.get("P(large eruption in hr)", "")
+
+        erps = self.volcanoConfigData['near_vent_inputs'].get("Eruption size", "")
+        p_hrly = [p_small, p_mod, p_lrg]
+        p_erp_expo = self.volcanoConfigData['near_vent_inputs'].get("P(given eruption, exposure to near vent processes)", "")
+        p_exo_death = self.volcanoConfigData['near_vent_inputs'].get("P (given exposure, death from near vent processes)", "")
+
+        df_nvp = {'Eruption size': erps,
+                  'P(hourly)': p_hrly,
+                  'P(given eruption, exposure to near vent processes)': p_erp_expo,
+                  'P(given exposure, death from near vent processes)': p_exo_death}
+        self.table_nvp = pd.DataFrame(data=df_nvp)
+        self.table_nvp['P(given eruption, death from near vent processes)'] = self.table_nvp['P(given eruption, exposure to near vent processes)'] * \
+                                                                            self.table_nvp['P(given exposure, death from near vent processes)']
+        self.table_nvp['P(death from near vent processes in hr)'] = self.table_nvp['P(hourly)'] * self.table_nvp['P(given eruption, death from near vent processes)']
+
+        return self.table_nvp
 
     def table_ballis(self):
         # getting P(hourly) from erp_cls
@@ -236,70 +301,3 @@ class white_island(volcano):
 
 
 
-
-
-
-    # # ballistic parameters wrt distance
-    # # Note that dis1<dis2<dis3
-    # def ballistic_area_dis(self):
-    #     # Ballistic diameter (m)
-    #     ball_dis1 = [0.3, 0.3, 0.3]
-    #     ball_dis2 = [0.2, 0.3, 0.3]
-    #     ball_dis3 = [0, 0.2, 0.3]
-    #
-    #     # Given eruption, # ballistics in reference area
-    #     ball_area1 = [5, 50, 200]
-    #     ball_area2 = [0.1, 10, 100]
-    #     ball_area3 = [0, 5, 10]
-    #
-    #     self.dc3 = {'bdia1': ball_dis1,
-    #                 'bdia2': ball_dis2,
-    #                 'bdia3': ball_dis3,
-    #                 'bn1': ball_area1,
-    #                 'bn2': ball_area2,
-    #                 'bn3': ball_area3}
-    #     return self.dc3
-    #
-    # def near_vent_p(self):
-    #     pex = [0, 0.1, 1]  # P(given eruption, exposure to near vent processes)
-    #     ped = [0.9, 0.9, 1]  # P (given exposure, death from near vent processes)
-    #
-    #     self.dc4 = {'pex': pex,
-    #                 'ped': ped}
-    #     return self.dc4
-    #
-    # def surge_paras(self):
-    #     # P(given eruption, exposure to surge - esx) at (dis1) 100, (dis2) 350 and (dis3)750m distance for STANDARD CALCULATION (strd),
-    #     # ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
-    #     # strd
-    #     p_esx_dis1str = [0.01, 0.3, 0.4]
-    #     p_esx_dis2str = [0, 0.3, 0.4]
-    #     p_esx_dis3str = [0, 0.2, 0.4]
-    #     # adjc
-    #     p_esx_dis1adjc = [1, 1, 1]
-    #     p_esx_dis2adjc = [0.5, 1, 1]
-    #     p_esx_dis3adjc = [0, 1, 1]
-    #     # adjh
-    #     p_esx_dis1adjh = [1, 1, 1]
-    #     p_esx_dis2adjh = [0, 0.3, 1]
-    #     p_esx_dis3adjh = [0, 0.05, 1]
-    #
-    #     # P(given exposure, death from surge - exd) at 100m, 350m and 750m distances
-    #     p_exd_dis1 = [0.95, 1, 1]
-    #     p_exd_dis2 = [0.95, 0.95, 1]
-    #     p_exd_dis3 = [0.95, 0.95, 0.95]
-    #
-    #     self.dc5 = {'p_esx_dis1str': p_esx_dis1str,
-    #                 'p_esx_dis2str': p_esx_dis2str,
-    #                 'p_esx_dis3str': p_esx_dis3str,
-    #                 'p_esx_dis1adjc': p_esx_dis1adjc,
-    #                 'p_esx_dis2adjc': p_esx_dis2adjc,
-    #                 'p_esx_dis3adjc': p_esx_dis3adjc,
-    #                 'p_esx_dis1adjh': p_esx_dis1adjh,
-    #                 'p_esx_dis2adjh': p_esx_dis2adjh,
-    #                 'p_esx_dis3adjh': p_esx_dis3adjh,
-    #                 'p_exd_dis1': p_exd_dis1,
-    #                 'p_exd_dis2': p_exd_dis2,
-    #                 'p_exd_dis3': p_exd_dis3
-    #                 }
-    #     return self.dc5
