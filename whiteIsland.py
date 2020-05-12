@@ -225,6 +225,8 @@ class white_island(volcano):
             x=x1,
             y=y1,
             mode='markers',
+            marker_symbol='diamond',
+            marker_color="rgba(0,0,0,0.5)",
             name='Data')
 
         # linear model
@@ -236,7 +238,7 @@ class white_island(volcano):
             x=x1,
             y=np.exp(m * x1 + c),
             mode="lines",
-            marker=go.scatter.Marker(color='rgb(31, 119, 180)'),
+            line=dict(width=2, dash='dot', color="rgba(0,0,0,0.8)"),
             name='Fit'
         )
 
@@ -247,6 +249,7 @@ class white_island(volcano):
             xaxis_title="Distance (m)",
             yaxis_title="Hourly risk of dying from eruption",
             yaxis_type="log",
+            plot_bgcolor='rgba(0,0,0,0)',
             yaxis=go.layout.YAxis(
                 dtick=1,
                 # tick0 = 0.0000001,
@@ -260,6 +263,78 @@ class white_island(volcano):
         self.fig = go.Figure(
             data=data,
             layout=layout
+        )
+
+        self.fig.update_xaxes(showline=True, linewidth=0.8, linecolor='black', ticks="outside", tickwidth=0.8,
+                         tickcolor='black', ticklen=4, mirror=True)
+        self.fig.update_yaxes(showline=True, linewidth=0.8, linecolor='black', ticks="outside", tickwidth=0.8,
+                         tickcolor='black', ticklen=4, mirror=True)
+        self.fig.update_layout(
+            shapes=[
+                # 1st highlight during Feb 4 - Feb 6
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.000001,
+                    x0=0,
+                    y1=0.00001,
+                    x1=1,
+                    fillcolor="Lightgreen",
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.00001,
+                    x0=0,
+                    y1=0.0001,
+                    x1=1,
+                    fillcolor="Lightyellow",
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.0001,
+                    x0=0,
+                    y1=0.001,
+                    x1=1,
+                    fillcolor="lightpink",
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.001,
+                    x0=0,
+                    y1=1,
+                    x1=1,
+                    fillcolor="lightblue",
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                )
+
+            ]
         )
 
         self.fig.show()
