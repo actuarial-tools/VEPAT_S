@@ -41,10 +41,11 @@ site3 = base_para['Site location'][2]
 
 #create table based on the inputs
 df0 = get_inps.table_vpt()
+#df0000 = get_inps.table_vpt_last()
 
 #calculate stats based on the table
 df00 = get_inps.table_stat_vpt()
-
+#df000 = get_inps.table_stat_vpt_last()
 
 #do calculations based on thee volcano from here onwards
 
@@ -68,6 +69,7 @@ if confg == "config_whiteIsland.JSON":
 
     # elecitation statistics plot
     get_inps.elici_plot()
+    get_inps.elici_plot_last()
 
 
     # generate ballistics dfs with initial input parameters
@@ -148,6 +150,7 @@ if confg == "config_ruapehu.JSON":
 
     # elecitation statistics plot
     get_inps.elici_plot()
+    get_inps.elici_plot_last()
 
  # generate ballistics dfs with initial input parameters
     df_dis1, df_dis2, df_dis3, df_dis4 = cng.table_ballis()

@@ -176,10 +176,10 @@ class white_island(volcano):
             "Calculation:": calt,
             "Distance(m):": dis,
             "Site description:": obsp,
-            "Total risk dying in hour:": float(format(TRDE, '.3g')),
-            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.3g')),
-            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.3g')),
-            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.3g'))
+            "Total risk dying in hour:": float(format(TRDE, '.10g')),
+            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.5g')),
+            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.5g')),
+            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.5g'))
         }
 
         return self.RDE

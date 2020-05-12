@@ -172,7 +172,7 @@ class ruapehu(volcano):
             "Calculation:": calt,
             "Distance(km):": dis,
             "Site description:": obsp,
-            "Total risk dying in hour:": float(format(TRDE, '.5g')),
+            "Total risk dying in hour:": float(format(TRDE, '.10g')),
             "Risk dying from size3 eruption in hour:": float(format(RDE_sml, '.5g')),
             "Risk dying from size4 eruption in hour:": float(format(RDE_med, '.5g')),
             "Risk dying from size5 eruption in hour:": float(format(RDE_lrg, '.5g'))
