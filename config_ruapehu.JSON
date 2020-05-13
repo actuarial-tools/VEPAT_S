@@ -19,8 +19,8 @@
 
       "elicitation_parameters_last": {
                   "Elicitation date": "17 Nov 2019",
-                  "Elicitation (day/s)":0,
-                  "Duration (week/s)":4
+                  "Elicitation Duration (day/s)":0,
+                  "Elicitation Duration (week/s)":4
       },
 
     "phit_inputs": {

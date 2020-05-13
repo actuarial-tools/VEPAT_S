@@ -12,13 +12,13 @@ import ruapehu as ruphu
 volcano = input("Volcano:")
 confg= input("Configuration file (JSON):") #config_whiteIsland.JSON
 eldate= input("Elicitation date:")
-print("Only enter one of Elicitation (days/s) or Duration (week/s), if non enter 0")
+print("Only enter one of Elicitation Duration (days/s) or Elicitation Duration (week/s), if non enter 0")
 
-elc = int(input("Elicitation (day/s):"))
+elc = int(input("Elicitation Duration (day/s):"))
 if elc > 0:
     du = 0
 else:
-    du = int(input("Duration (week/s):"))
+    du = int(input("Elicitation Duration (week/s):"))
 
 # Get Elicitation Inputs:
 get_inps = vol.volcano(elc, du, volcano, eldate, filename=confg)

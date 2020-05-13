@@ -21,15 +21,15 @@ class Testvolcano(TestCase):
         eldate = input('Elicitation date:')
         print("Only enter one of Elicitation (days/s) or Duration (week/s), if non enter 0")
 
-        elc = int(input('Elicitation (day/s):'))
+        elc = int(input('Elicitation Duration (day/s):'))
         if elc > 0:
             du = 0
         else:
-            du = int(input('Duration (week/s):'))
+            du = int(input('Elicitation Duration (week/s):'))
 
         v = volcano(elc, du, vol, eldate, confg)
         response = v.inp_para()
-        self.assertEqual(first=response["Elicitation (day/s)"], second=0),
+        self.assertEqual(first=response["Elicitation Duration (day/s)"], second=0),
 
     def test_table_vpt(self):
         v = volcano(elc=0, du=4, volcano='WHAKAARI / WHITE ISLAND',
