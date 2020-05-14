@@ -1,0 +1,71 @@
+{
+      "elicitation_inputs": {
+
+                  "Person": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  "Best guess": [0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.036, 0.05, 0.05],
+                  "Best guess repeat": [0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.036, 0.05, 0.05],
+                  "Min": [0.004, 0.01, 0.01, 0.01, 0.001, 0.01, 0.012, 0.01, 0.01],
+                  "Max": [0.05, 0.03, 0.05, 0.05, 0.06, 0.04, 0.2, 0.1, 0.1]
+      },
+
+      "elicitation_inputs_last": {
+
+                  "Person": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  "Best guess": [0.1, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1, 0.15, 0.1],
+                  "Best guess repeat": [0.1, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1, 0.15, 0.1],
+                  "Min": [0.01, 0.01, 0.02, 0.05, 0.11, 0.02, 0.01, 0.01, 0.05],
+                  "Max": [0.4, 0.4, 0.5, 0.6, 0.5, 0.5, 0.5, 0.5, 0.6]
+      },
+
+      "elicitation_parameters_last": {
+                  "Elicitation date": "15 Jan 2015",
+                  "Elicitation Duration (day/s)":0,
+                  "Elicitation Duration (week/s)":4
+      },
+
+    "phit_inputs": {
+          "boulder diameter": [0.3, 0.6, 1],
+          "person diameter": [1, 1, 1, 1, 1, 1],
+          "square length": [30, 30, 30, 30, 30, 30]
+    },
+
+    "near_vent_inputs": {
+            "Eruption size": ["Small", "Moderate", "Large"],
+            "P(given eruption, exposure to near vent processes)": [1, 1, 1],
+            "P (given exposure, death from near vent processes)": [1,1, 1]
+    },
+
+    "Ballistics_inputs": {
+           "Ballistic diameter 0.5km": [1, 1, 1],
+           "Ballistic diameter 1.5km": [1, 1, 1],
+
+           "no ballistics in reference area 0.5km": [10, 100, 1000],
+           "no ballistics in reference area 1.5km": [0.05, 0.5, 5]
+
+      },
+
+    "Surge_inputs": {
+         "P(given eruption, exposure to surge)_standard_0.5km": [0.1, 1, 1],
+         "P(given eruption, exposure to surge)_standard_1.5km": [0.01, 0.5, 1],
+
+         "P(given exposure, death from surge)_0.5km": [0.95, 1, 1],
+         "P(given exposure, death from surge)_1.5km": [0.95, 0.95, 1]
+
+    },
+
+
+    "Base parameters": {
+       "calculation type":["Standard", "", ""],
+       "Distance": [0.5, 1.5],
+       "Site location": ["500 m from vent", "Ketetahi hut"]
+    },
+
+
+    "final_zone_estimate": {
+       "Acceptable risk": [0.00001],
+       "GNS Staff access sign-off": ["Staff exclusion zone", "GMS & VSA", "VSA"]
+    }
+
+}
+
+

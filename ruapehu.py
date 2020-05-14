@@ -13,10 +13,81 @@ class ruapehu(volcano):
         super().__init__(elc, du, volcano, eldate, filename)
         # self.df1 = None
         self.erp_cls = self.cal_vpt()
-        self.table_nvp = self.table_near_vent_proc()
+        #self.table_nvp = self.table_near_vent_proc()
 
-    # def load_table(self, df2):
-    #     self.df2 = df2
+    def doCalculationsPlots(self, pcals, get_inps, base_para, distance1, distance2, distance3,
+                            site1, site2, site3, cal_type1, ):
+        # calculations for plotting and other, calculations from this function saved as a dictionaryx
+        erp_cals = self.cal_vpt()
+
+        # Table: Near Vent Processes
+        near_vent = self.table_near_vent_proc()
+
+        # P of death from one ballistics: tables & calculations
+        phit = pcals.PcalsVepat.from_input()
+        df1 = get_inps.table_phit()
+        phit.load_dfs(df1, df2=None)
+
+        # Tables of Death from one ballistic: 0.2 m/0.3/0.4
+        phit_tbl = phit.phit_cal()
+
+        # elecitation statistics plot
+        get_inps.elici_plot()
+        get_inps.elici_plot_last()
+
+        # generate ballistics dfs with initial input parameters
+        df_dis1, df_dis2, df_dis3, df_dis4 = self.table_ballis()
+
+        # ballistics 0km table for statnadrd, adjusted
+        phit.load_dfs(df1, df_dis1)
+        ball_dis1 = phit.ballis_cal()
+
+        # ballistics 0.5km table for statnadrd, adjusted
+        phit.load_dfs(df1, df_dis2)
+        ball_dis2 = phit.ballis_cal()
+
+        # ballistics 1.3.km table for statnadrd, adjusted
+        phit.load_dfs(df1, df_dis3)
+        ball_dis3 = phit.ballis_cal()
+
+        # ballistics 1.3.km table for statnadrd, adjusted
+        phit.load_dfs(df1, df_dis4)
+        ball_dis4 = phit.ballis_cal()
+
+        # generate all the surge tables (9 tables)
+        df_srgDis1strd, df_srgDis2strd, df_srgDis3strd, df_srgDis4strd = self.table_surge()
+
+        ##risk of dying in an eruption (rde) calculations:
+        # inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type
+        # cal_type1 calculation
+        # extra base parameters for self
+        distance4 = base_para['Distance'][3]
+        site4 = base_para['Site location'][3]
+
+        rde_Dis1strd = self.risk_dying_dicts(ball_dis1, df_srgDis1strd, distance1, site1, cal_type1, df1=near_vent)
+        rde_Dis2strd = self.risk_dying_dicts(ball_dis2, df_srgDis2strd, distance2, site2, cal_type1, df1=None)
+        rde_Dis3strd = self.risk_dying_dicts(ball_dis3, df_srgDis3strd, distance3, site3, cal_type1, df1=None)
+        rde_Dis4strd = self.risk_dying_dicts(ball_dis4, df_srgDis4strd, distance4, site4, cal_type1, df1=None)
+
+        # generate summary tables and calculations
+        pd.options.display.float_format = '{:.3g}'.format
+        summary_strd, slope_strd, yincp_strd, cal_strd = self.df_summary(rde_Dis1strd, rde_Dis2strd, rde_Dis3strd,
+                                                                            rde_Dis4strd, cal_type1)
+
+        # generate volcano specific plots
+        # risk summary plots
+        self.summary_plots(summary_strd, cal_type1)
+
+        # Generate summary table with slopes, intercepts and calculation type
+
+        tb_smry = {'cal type': [cal_type1],
+                   'slope': [slope_strd],
+                   'yinc': [yincp_strd]}
+        df_smry = pd.DataFrame(data=tb_smry)
+
+        # Generate final risk zone table
+        riskzn = self.riskzn(df_smry)
+
 
     def cal_vpt(self):
         p_erup = self.df2.iloc[2]['Best Guess']  # P(eruption in period):
@@ -53,13 +124,7 @@ class ruapehu(volcano):
 
         return self.erp_cls
 
-    # function to extract values from dictionary: erp_cls
-    # def get_p_hourly(self):
-    #     # getting P(hourly) from erp_cls
-    #     p_small = self.erp_cls.get("P(small eruption in hr)", "")
-    #     p_mod = self.erp_cls.get("P(moderate eruption in hr)", "")
-    #     p_lrg = self.erp_cls.get("P(large eruption in hr)", "")
-    #     return p_small, p_mod, p_lrg
+
 
     def table_near_vent_proc(self):
         # getting P(hourly) from erp_cls
@@ -223,6 +288,8 @@ class ruapehu(volcano):
             x=x1,
             y=y1,
             mode='markers',
+            marker_symbol='diamond',
+            marker_color="rgba(0,0,0,0.5)",
             name='Data')
 
         # linear model
@@ -234,7 +301,7 @@ class ruapehu(volcano):
             x=x1,
             y=np.exp(m * x1 + c),
             mode="lines",
-            marker=go.scatter.Marker(color='rgb(31, 119, 180)'),
+            line=dict(width=2, dash='dot', color="rgba(0,0,0,0.8)"),
             name='Fit'
         )
 
@@ -242,9 +309,10 @@ class ruapehu(volcano):
         tit = inp1 + " risk (" + cal + " calc): valid " + inp2 + " for " + inp3
         layout = go.Layout(
             title=tit,
-            xaxis_title="Distance (m)",
+            xaxis_title="Distance (km)",
             yaxis_title="Hourly risk of dying from eruption",
             yaxis_type="log",
+            plot_bgcolor='rgba(0,0,0,0)',
             yaxis=go.layout.YAxis(
                 dtick=1,
                 # tick0 = 0.0000001,
@@ -260,17 +328,92 @@ class ruapehu(volcano):
             layout=layout
         )
 
+        self.fig.update_xaxes(showline=True, linewidth=0.8, linecolor='black', ticks="outside", tickwidth=0.8,
+                              tickcolor='black', ticklen=4, mirror=True)
+        self.fig.update_yaxes(showline=True, linewidth=0.8, linecolor='black', ticks="outside", tickwidth=0.8,
+                              tickcolor='black', ticklen=4, mirror=True)
+        self.fig.update_layout(
+            shapes=[
+                # 1st highlight during Feb 4 - Feb 6
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.000001,
+                    x0=0,
+                    y1=0.00001,
+                    x1=1,
+                    fillcolor="Lightgreen",
+                    name='< 10-5 (just field intention form): > 520 m',
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.00001,
+                    x0=0,
+                    y1=0.0001,
+                    x1=1,
+                    fillcolor="Lightyellow",
+                    name='10-4 - 10-5 (VSA approval): < 520 m',
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.0001,
+                    x0=0,
+                    y1=0.001,
+                    x1=1,
+                    fillcolor="lightpink",
+                    name='10-3 - 10-4 (GMS & VSA approval): N/A',
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.001,
+                    x0=0,
+                    y1=1,
+                    x1=1,
+                    fillcolor="lightblue",
+                    name='> 10-3 (exclusion zone): N/A',
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                )
+
+            ]
+        )
+
         self.fig.show()
 
     # final risk zone table
     def riskzn(self, df2):
-        HRF = self.volcanoConfigData["final_zone_estimate"]["Hourly risk of fatality"]
-        # hrf1 = HRF[0]
-        # hrf2 = HRF[1]
-        # hrf3 = HRF[2]
-        GNSstff = self.volcanoConfigData["final_zone_estimate"]["GNS Staff access sign-off"]
-        tb_riskzone = {'Hourly risk of fatality': ['{0:1.1E}'.format(HRF[0], 'E'), '{0:1.1E}'.format(HRF[1], 'E'), '{0:1.1E}'.format(HRF[2], 'E')],
-                       'GNS Staff access sign-off': GNSstff}
+        HRF = self.volcanoConfigData["final_zone_estimate"]["Acceptable risk"]
+        hrf1 = HRF[0]
+        #hrf2 = HRF[1]
+        #hrf3 = HRF[2]
+        #GNSstff = self.volcanoConfigData["final_zone_estimate"]["GNS Staff access sign-off"]
+        tb_riskzone = {'Acceptable risk': ['{0:1.2E}'.format(HRF[0], 'E')]}
 
         df1 = pd.DataFrame(data=tb_riskzone)
 
@@ -281,9 +424,9 @@ class ruapehu(volcano):
 
             dfh = pd.DataFrame([])
             list1 = []
-            for hrf in df1['Hourly risk of fatality']:
+            for hrf in df1['Acceptable risk']:
                 # print(hrf)
-                val1 = 10 * round(((np.log(float(hrf)) - val2) / val3) / 10, 0)
+                val1 = round(((np.log(float(hrf)) - val2) / val3), 2)
                 dfh = dfh.append(pd.DataFrame({col1: val1}, index=[0]), ignore_index=True)
                 list1 = dfh[col1].tolist()
             df1[col1] = list1

@@ -69,7 +69,7 @@
 
 
     "final_zone_estimate": {
-       "Hourly risk of fatality": [0.001, 0.0001, 0.00001],
+       "Acceptable risk": [0.00001],
        "GNS Staff access sign-off": ["Staff exclusion zone", "GMS & VSA", "VSA"]
     }
 
