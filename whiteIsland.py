@@ -40,15 +40,15 @@ class white_island(volcano):
 
         # ballistics 100m table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis1)
-        ball_dis1 = phit.ballis_cal()
+        ball_dis1 = phit.ballis_cal(phit_tbl)
 
         # ballistics 350m table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis2)
-        ball_dis2 = phit.ballis_cal()
+        ball_dis2 = phit.ballis_cal(phit_tbl)
 
         # ballistics 750m table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis3)
-        ball_dis3 = phit.ballis_cal()
+        ball_dis3 = phit.ballis_cal(phit_tbl)
 
         # generate all the surge tables (9 tables)
         df_srgDis1strd, df_srgDis2strd, df_srgDis3strd, df_srgDis1adjc, df_srgDis2adjc, \
@@ -95,6 +95,7 @@ class white_island(volcano):
 
         # Generate final risk zone table
         riskzn = self.riskzn(df_smry)
+
 
 
 
@@ -293,6 +294,7 @@ class white_island(volcano):
             inp3 = str(inp3) + " day/s"
 
         x1 = df_s['Distance (m)']
+        x1max = df_s['Distance (m)'].max()
         y1 = df_s['Risk dying in hour']
         y2 = np.log(df_s['Risk dying in hour'])
 
@@ -332,6 +334,11 @@ class white_island(volcano):
                 autorange=False,
                 showexponent='all',
                 exponentformat='E'
+            ),
+            xaxis = go.layout.XAxis(
+                dtick=100,
+                range=[0, x1max + 100],
+                autorange=False
             )
         )
 
@@ -445,6 +452,7 @@ class white_island(volcano):
             df1[col1] = list1
 
         return df1
+
 
 
 

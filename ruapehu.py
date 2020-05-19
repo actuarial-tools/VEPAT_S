@@ -40,19 +40,19 @@ class ruapehu(volcano):
 
         # ballistics 0km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis1)
-        ball_dis1 = phit.ballis_cal()
+        ball_dis1 = phit.ballis_cal(phit_tbl)
 
         # ballistics 0.5km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis2)
-        ball_dis2 = phit.ballis_cal()
+        ball_dis2 = phit.ballis_cal(phit_tbl)
 
         # ballistics 1.3.km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis3)
-        ball_dis3 = phit.ballis_cal()
+        ball_dis3 = phit.ballis_cal(phit_tbl)
 
         # ballistics 1.3.km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis4)
-        ball_dis4 = phit.ballis_cal()
+        ball_dis4 = phit.ballis_cal(phit_tbl)
 
         # generate all the surge tables (9 tables)
         df_srgDis1strd, df_srgDis2strd, df_srgDis3strd, df_srgDis4strd = self.table_surge()
@@ -87,6 +87,7 @@ class ruapehu(volcano):
 
         # Generate final risk zone table
         riskzn = self.riskzn(df_smry)
+
 
 
     def cal_vpt(self):
@@ -281,6 +282,7 @@ class ruapehu(volcano):
             inp3 = str(inp3) + " day/s"
 
         x1 = df_s['Distance (km)']
+        x1max = df_s['Distance (km)'].max()
         y1 = df_s['Risk dying in hour']
         y2 = np.log(df_s['Risk dying in hour'])
 
@@ -320,6 +322,11 @@ class ruapehu(volcano):
                 autorange=False,
                 showexponent='all',
                 exponentformat='E'
+            ),
+            xaxis = go.layout.XAxis(
+                dtick=0.5,
+                range=[0, x1max + 0.5],
+                autorange=False
             )
         )
 

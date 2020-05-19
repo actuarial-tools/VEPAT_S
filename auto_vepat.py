@@ -71,8 +71,7 @@ if confg == "config_tongariro.JSON":
     tongariro = tongariro(du=du, elc=elc, eldate=eldate, filename=confg,
                         volcano=volcano)
 
-    tongariro.doCalculationsPlots(pcals, get_inps, base_para, distance1, distance2, distance3,
-                            site1, site2, site3, cal_type1)
+    tongariro.doCalculationsPlots(pcals, get_inps, distance1, distance2, site1, site2, cal_type1)
 
 
 

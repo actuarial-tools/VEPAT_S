@@ -23,10 +23,10 @@
                   "Elicitation Duration (week/s)":4
       },
 
-    "phit_inputs": {
+      "phit_inputs": {
           "boulder diameter": [0.3, 0.6, 1],
-          "person diameter": [1, 1, 1, 1, 1, 1],
-          "square length": [30, 30, 30, 30, 30, 30]
+          "person diameter": [1, 1, 1],
+          "square length": [30, 30, 30]
     },
 
     "near_vent_inputs": {
@@ -56,8 +56,8 @@
 
     "Base parameters": {
        "calculation type":["Standard", "", ""],
-       "Distance": [0.5, 1.5],
-       "Site location": ["500 m from vent", "Ketetahi hut"]
+       "Distance": [0.5, 1.5, ""],
+       "Site location": ["500 m from vent", "Ketetahi hut", ""]
     },
 
 

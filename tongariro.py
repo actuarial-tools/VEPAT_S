@@ -15,13 +15,12 @@ class tongariro(volcano):
         self.erp_cls = self.cal_vpt()
         #self.table_nvp = self.table_near_vent_proc()
 
-    def doCalculationsPlots(self, pcals, get_inps, base_para, distance1, distance2, distance3,
-                            site1, site2, site3, cal_type1, ):
+    def doCalculationsPlots(self, pcals, get_inps, distance1, distance2, site1, site2, cal_type1):
         # calculations for plotting and other, calculations from this function saved as a dictionaryx
         erp_cals = self.cal_vpt()
 
-        # Table: Near Vent Processes
-        near_vent = self.table_near_vent_proc()
+        # Table: Near Vent Processes (not doing this for tongariro)
+        #near_vent = self.table_near_vent_proc()
 
         # P of death from one ballistics: tables & calculations
         phit = pcals.PcalsVepat.from_input()
@@ -29,7 +28,7 @@ class tongariro(volcano):
         phit.load_dfs(df1, df2=None)
 
         # Tables of Death from one ballistic: 0.2 m/0.3/0.4
-        phit_tbl = phit.phit_cal()
+        phit_tbl = phit.phit_cal2()
 
         # elecitation statistics plot
         get_inps.elici_plot()
@@ -40,11 +39,11 @@ class tongariro(volcano):
 
         # ballistics 0.5km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis1)
-        ball_dis1 = phit.ballis_cal()
+        ball_dis1 = phit.ballis_cal(phit_tbl)
 
         # ballistics 1.5km table for statnadrd, adjusted
         phit.load_dfs(df1, df_dis2)
-        ball_dis2 = phit.ballis_cal()
+        ball_dis2 = phit.ballis_cal(phit_tbl)
 
 
         # generate all the surge tables (9 tables)
@@ -54,13 +53,13 @@ class tongariro(volcano):
         # inpput parameters: dis = distance (=100, 350, 750m depending on the input dfs)/ obps: observation point/calt = calculation type
 
 
-        rde_Dis1strd = self.risk_dying_dicts(ball_dis1, df_srgDis1strd, distance1, site1, cal_type1, df1=near_vent)
+        rde_Dis1strd = self.risk_dying_dicts(ball_dis1, df_srgDis1strd, distance1, site1, cal_type1, df1=None)
         rde_Dis2strd = self.risk_dying_dicts(ball_dis2, df_srgDis2strd, distance2, site2, cal_type1, df1=None)
 
 
         # generate summary tables and calculations
         pd.options.display.float_format = '{:.3g}'.format
-        summary_strd, slope_strd, yincp_strd, cal_strd = self.df_summary(rde_Dis1strd, rde_Dis2strd, cal_type1)
+        summary_strd, slope_strd, yincp_strd, cal_strd = self.df_summary(erp_cals, rde_Dis1strd, rde_Dis2strd, cal_type1)
 
         # generate volcano specific plots
         # risk summary plots
@@ -75,6 +74,8 @@ class tongariro(volcano):
 
         # Generate final risk zone table
         riskzn = self.riskzn(df_smry)
+
+
 
 
     # def load_table(self, df2):
@@ -229,21 +230,21 @@ class tongariro(volcano):
 
         return self.RDE
 
-    def df_summary(self, dctDis1, dctDis2, dctDis3, dctDis4, cal):
+    def df_summary(self, dctDis0, dctDis1, dctDis2, cal):
         # get distance values
-        dis1 = dctDis1.get("Distance(km):", "")
+        dis1 = (dctDis1.get("Distance(km):", ""))
         dis2 = dctDis2.get("Distance(km):", "")
-        dis3 = dctDis3.get("Distance(km):", "")
-        dis4 = dctDis4.get("Distance(km):", "")
+        #dis3 = dctDis3.get("Distance(km):", "")
+        #dis4 = dctDis4.get("Distance(km):", "")
 
-        #rdh0 = dctDis0.get("P(eruption in hr)", "")
+        rdh0 = dctDis0.get("P(eruption in hr)", "")
         rdh1 = dctDis1.get("Total risk dying in hour:", "")
         rdh2 = dctDis2.get("Total risk dying in hour:", "")
-        rdh3 = dctDis3.get("Total risk dying in hour:", "")
-        rdh4 = dctDis4.get("Total risk dying in hour:", "")
+        #rdh3 = dctDis3.get("Total risk dying in hour:", "")
+        #rdh4 = dctDis4.get("Total risk dying in hour:", "")
 
-        tb_final = {'Distance (km)': [dis1, dis2, dis3, dis4],
-                    'Risk dying in hour': [rdh1, rdh2, rdh3,rdh4]}
+        tb_final = {'Distance (km)': [0, dis1, dis2],
+                    'Risk dying in hour': [rdh0, rdh1, rdh2]}
         self.df_final = pd.DataFrame(data=tb_final)
 
         # calculate slope and intercept
@@ -265,6 +266,7 @@ class tongariro(volcano):
             inp3 = str(inp3) + " day/s"
 
         x1 = df_s['Distance (km)']
+        x1max = df_s['Distance (km)'].max()
         y1 = df_s['Risk dying in hour']
         y2 = np.log(df_s['Risk dying in hour'])
 
@@ -304,6 +306,12 @@ class tongariro(volcano):
                 autorange=False,
                 showexponent='all',
                 exponentformat='E'
+            ),
+
+            xaxis = go.layout.XAxis(
+                dtick=0.5,
+                range=[0, x1max + 0.5],
+                autorange=False
             )
         )
 
