@@ -17,7 +17,7 @@ class white_island(volcano):
 
     def doCalculationsPlots(self, pcals, get_inps, base_para, distance1, distance2, distance3,
                             site1, site2, site3, cal_type1, cal_type2, cal_type3 ):
-        # calculations for plotting and other, calculations from this function saved as a dictionaryx
+        # calculations for plotting and other, calculations from this function saved as a dictionary
         erp_cals = self.cal_vpt()
 
         # Table: Near Vent Processes

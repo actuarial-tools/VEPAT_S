@@ -40,7 +40,7 @@ class Test(TestCase):  # run this test for elecitation = 1 and duration = 4
                'Max': [0.355, 0.4, ""]}
         d_test = pandas.DataFrame(data=df2)
 
-        df1 = table_vpt(pNo, bestG, Best_guessR, minG, maxG)
+        df1 = table_vpt()
         response = table_stat_vpt(df1)
 
         assert_frame_equal(response, d_test, check_dtype=False)
@@ -65,7 +65,7 @@ class Test(TestCase):  # run this test for elecitation = 1 and duration = 4
         minG = [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05]
         maxG = [0.2, 0.25, 0.25, 0.4, 0.25, 0.4, 0.4, 0.4, 0.4, 0.6]
 
-        df1 = table_vpt(pNo, bestG, Best_guessR, minG, maxG)
+        df1 = table_vpt()
         df2 = table_stat_vpt(df1)
 
         erp_cals = cal_vpt(df2=df2, elc=0, du=4)
