@@ -1,0 +1,73 @@
+{
+      "elicitation_inputs": {
+
+                  "Person": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                  "Best guess": [0.001, 0.009, 0.01, 0.01, 0.02, 0.02, 0.025, 0.03, 0.03, 0.03, 0.06],
+                  "Best guess repeat": [0.001, 0.009, 0.01, 0.01, 0.02, 0.02, 0.025, 0.03, 0.03, 0.03, 0.06],
+                  "Min": [0.0001, null, 0.005, 0.005, 0.0055, 0.015, 0.005, 0.001, 0.003, 0.01, 0.006],
+                  "Max": [0.005,null, 0.05, 0.1, 0.03, 0.025, 0.09, 0.2, 0.15, 0.05, 0.5]
+      },
+
+      "elicitation_inputs_last": {
+
+                  "Person": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  "Best guess": [0.1, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1, 0.15, 0.1],
+                  "Best guess repeat": [0.1, 0.1, 0.1, 0.1, 0.2, 0.3, 0.1, 0.15, 0.1],
+                  "Min": [0.01, 0.01, 0.02, 0.05, 0.11, 0.02, 0.01, 0.01, 0.05],
+                  "Max": [0.4, 0.4, 0.5, 0.6, 0.5, 0.5, 0.5, 0.5, 0.6]
+      },
+
+      "elicitation_parameters_last": {
+                  "Elicitation date": "15 Jan 2015",
+                  "Elicitation Duration (day/s)":0,
+                  "Elicitation Duration (week/s)":4
+      },
+
+      "phit_inputs": {
+          "boulder diameter": [0.2, 0.3, 1],
+          "person diameter": [1, 1, 1],
+          "square length": [30, 30, 30]
+    },
+
+    "near_vent_inputs": {
+            "Eruption size": ["Phreatic eruption", "Larger phreatic eruption"],
+            "P(given eruption, exposure to near vent processes)": [0.1, 0.25],
+            "P (given exposure, death from near vent processes)": [1, 1]
+    },
+
+    "Ballistics_inputs": {
+           "Ballistic diameter 100m": [1, 1],
+           "Ballistic diameter 200m": [1, 1],
+           "Ballistic diameter 1000m": [0.2, 0.2],
+           "Ballistic diameter 2500m": [0, 0.2],
+
+           "no ballistics in reference area 100m": [20, 20],
+           "no ballistics in reference area 200m": [10, 20],
+           "no ballistics in reference area 1000m": [0.1, 1],
+           "no ballistics in reference area 2500m": [0, 0.1]
+
+      },
+
+    "Surge_inputs": {
+         "P(given eruption, exposure to surge)_standard_100m": [0.75, 0.75],
+         "P(given eruption, exposure to surge)_standard_200m": [0.75, 0.75],
+         "P(given eruption, exposure to surge)_standard_1000m": [0.01, 0.05],
+         "P(given eruption, exposure to surge)_standard_2500m": [0, 0.2],
+
+         "P(given exposure, death from surge)_100m": [1, 1],
+         "P(given exposure, death from surge)_200m": [0.75, 1],
+         "P(given exposure, death from surge)_1000m": [0.5, 0.95],
+         "P(given exposure, death from surge)_2500m": [0, 0.5]
+
+    },
+
+
+    "Base parameters": {
+       "calculation type":["Standard", "", ""],
+       "Distance": [100, 200, 1000, 2500],
+       "Site location": ["Inner crater rim", "Outer crater rim", "First break in slope", "Edifice base"]
+    }
+
+}
+
+

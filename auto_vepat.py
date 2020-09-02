@@ -6,6 +6,7 @@ import pcal_vepat as pcals
 from whiteIsland import white_island
 from ruapehu import ruapehu
 from tongariro import tongariro
+from ngauruhoe import ngauruhoe
 
 
 
@@ -35,9 +36,11 @@ distance1 = base_para['Distance'][0]
 distance2 = base_para['Distance'][1]
 distance3 = base_para['Distance'][2]
 
+
 site1 = base_para['Site location'][0]
 site2 = base_para['Site location'][1]
 site3 = base_para['Site location'][2]
+
 
 
 #create table based on the inputs
@@ -73,6 +76,11 @@ if confg == "config_tongariro.JSON":
 
     tongariro.doCalculationsPlots(pcals, get_inps, distance1, distance2, site1, site2, cal_type1)
 
+if confg == "config_ngauruhoe.JSON":
+    ngauruhoe = ngauruhoe(du=du, elc=elc, eldate=eldate, filename=confg,
+                        volcano=volcano)
+    ngauruhoe.doCalculationsPlots(pcals, get_inps, base_para, distance1, distance2, distance3,
+                                  site1, site2, site3, cal_type1)
 
 
 
