@@ -62,7 +62,7 @@ class volcano:
         # qntl_bestG = dfd['Best guess'].quantile(0.84) #84th percentile
         # 84th percentile calculation over a range of columns:
         dfd84 = pd.concat(self.dfd[c] for c in ['Best guess', 'Best guess repeat', 'Min', 'Max']).reset_index(drop=True).dropna()
-        print(dfd84)
+        #print(dfd84)
         pcntl_bestG = np.percentile(dfd84.values, 84)
 
         mean_min = self.dfd['Min'].mean()

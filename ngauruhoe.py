@@ -109,18 +109,17 @@ class ngauruhoe(volcano):
 
         p_Neruphr = math.pow(p_Nerup, 1 / B7)
         p_eruphr = 1 - p_Neruphr
-        p_lrgeruphr = 0.1*p_eruphr
-        p_mderuphr = 0.4*p_eruphr
-        p_smleruphr = 0.5*p_eruphr
+        p_phreatic_eruphr = 0.9*p_eruphr
+        p_lrg_phreatic_eruphr = 0.1 * p_eruphr
+
 
         self.erp_cls = {
             "P(eruption in period)": p_erup,
             "P(no erupt. in period)": p_Nerup,
             "P(no eruption in hr)": float(format(p_Neruphr, '.6g')),  # format(val, '.6g') => give 6 significant digits
             "P(eruption in hr)": float(format(p_eruphr, '.6g')),
-            "P(size3 eruption in hr)": float(format(p_smleruphr, '.6g')),
-            "P(size4 eruption in hr)": float(format(p_mderuphr, '.6g')),
-            "P(size5 eruption in hr)": float(format(p_lrgeruphr, '.6g'))
+            "P(Phreatic eruption in hr)": float(format(p_phreatic_eruphr, '.6g')),
+            "P(Larger phreatic eruption in hr)": float(format(p_lrg_phreatic_eruphr, '.6g')),
         }
 
         return self.erp_cls
@@ -129,26 +128,21 @@ class ngauruhoe(volcano):
 
     def table_near_vent_proc(self):
         # getting P(hourly) from erp_cls
-        p_small = self.erp_cls.get("P(size3 eruption in hr)", "")
-        p_mod = self.erp_cls.get("P(size4 eruption in hr)", "")
-        p_lrg = self.erp_cls.get("P(size5 eruption in hr)", "")
+        phreatic_erp = self.erp_cls.get("P(Phreatic eruption in hr)", "")
+        lphreatic_erp = self.erp_cls.get("P(Larger phreatic eruption in hr)", "")
 
         erps = self.volcanoConfigData['near_vent_inputs'].get("Eruption size", "")
-        p_hrly = [p_small, p_mod, p_lrg]
-        p_erp_expo = self.volcanoConfigData['near_vent_inputs'].get(
-            "P(given eruption, exposure to near vent processes)", "")
-        p_exo_death = self.volcanoConfigData['near_vent_inputs'].get(
-            "P (given exposure, death from near vent processes)", "")
+        p_hrly = [phreatic_erp, lphreatic_erp]
+        p_erp_expo = self.volcanoConfigData['near_vent_inputs'].get("P(given eruption, exposure to near vent processes)", "")
+        p_exo_death = self.volcanoConfigData['near_vent_inputs'].get("P (given exposure, death from near vent processes)", "")
 
         df_nvp = {'Eruption size': erps,
                   'P(hourly)': p_hrly,
                   'P(given eruption, exposure to near vent processes)': p_erp_expo,
                   'P(given exposure, death from near vent processes)': p_exo_death}
         self.table_nvp = pd.DataFrame(data=df_nvp)
-        self.table_nvp['P(given eruption, death from near vent processes)'] = self.table_nvp[
-                                                                                  'P(given eruption, exposure to near vent processes)'] * \
-                                                                              self.table_nvp[
-                                                                                  'P(given exposure, death from near vent processes)']
+        self.table_nvp['P(given eruption, death from near vent processes)'] = self.table_nvp['P(given eruption, exposure to near vent processes)'] * \
+                                                                              self.table_nvp['P(given exposure, death from near vent processes)']
         self.table_nvp['P(death from near vent processes in hr)'] = self.table_nvp['P(hourly)'] * self.table_nvp[
             'P(given eruption, death from near vent processes)']
 
