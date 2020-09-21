@@ -29,7 +29,7 @@ class ngauruhoe(volcano):
         phit.load_dfs(df1, df2=None)
 
         # Tables of Death from one ballistic: 0.2 m/0.3/0.4
-        phit_tbl = phit.phit_cal()
+        phit_tbl = phit.phit_cal2()
 
         # elecitation statistics plot
         get_inps.elici_plot()
@@ -152,26 +152,25 @@ class ngauruhoe(volcano):
 
     def table_ballis(self):
         # getting P(hourly) from erp_cls
-        p_small = self.erp_cls.get("P(size3 eruption in hr)", "")
-        p_mod = self.erp_cls.get("P(size4 eruption in hr)", "")
-        p_lrg = self.erp_cls.get("P(size5 eruption in hr)", "")
+        p_small = self.erp_cls.get("P(Phreatic eruption in hr)", "")
+        p_lrg = self.erp_cls.get("P(Larger phreatic eruption in hr)", "")
 
         erps = self.volcanoConfigData['near_vent_inputs'].get("Eruption size", "")
-        p_hrly = [p_small, p_mod, p_lrg]
+        p_hrly = [p_small, p_lrg]
         bpara = self.volcanoConfigData["Ballistics_inputs"]
 
         # Ballistic diameter (m)
-        ball_dia1 = bpara.get("Ballistic diameter 0km", "")
-        ball_dia2 = bpara.get("Ballistic diameter 0.5km", "")
-        ball_dia3 = bpara.get("Ballistic diameter 1.3km", "")
-        ball_dia4 = bpara.get("Ballistic diameter 2km", "")
+        ball_dia1 = bpara.get("Ballistic diameter 100m", "")
+        ball_dia2 = bpara.get("Ballistic diameter 100m", "")
+        ball_dia3 = bpara.get("Ballistic diameter 1000m", "")
+        ball_dia4 = bpara.get("Ballistic diameter 2500m", "")
 
 
         # Given eruption, # ballistics in reference area
-        ball_no1 = bpara.get("no ballistics in reference area 0km", "")
-        ball_no2 = bpara.get("no ballistics in reference area 0.5km", "")
-        ball_no3 = bpara.get("no ballistics in reference area 1.3km", "")
-        ball_no4 = bpara.get("no ballistics in reference area 2km", "")
+        ball_no1 = bpara.get("no ballistics in reference area 100m", "")
+        ball_no2 = bpara.get("no ballistics in reference area 200m", "")
+        ball_no3 = bpara.get("no ballistics in reference area 1000m", "")
+        ball_no4 = bpara.get("no ballistics in reference area 2500m", "")
 
         self.df_ballis1 = self.tbl_ballis(erps, p_hrly, ball_dia1, ball_no1)
         self.df_ballis2 = self.tbl_ballis(erps, p_hrly, ball_dia2, ball_no2)

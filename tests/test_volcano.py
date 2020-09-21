@@ -36,7 +36,7 @@ class Testvolcano(TestCase):
                     eldate='21 January 2020', filename='../config_whiteIsland.JSON')
         response = v.table_vpt()
 
-        df1 = {"Person": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        df1 = {"Person": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],  
                "Best guess": [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3],
                "Best guess repeat": [0.1, 0.15, 0.15, 0.15, 0.18, 0.2, 0.2, 0.2, 0.25, 0.3],
                "Min": [0.05, 0.05, 0.05, 0.05, 0.11, 0.05, 0.1, 0.13, 0.1, 0.05],
