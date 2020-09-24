@@ -52,7 +52,7 @@
          "P(given eruption, exposure to surge)_standard_100m": [0.75, 0.75],
          "P(given eruption, exposure to surge)_standard_200m": [0.75, 0.75],
          "P(given eruption, exposure to surge)_standard_1000m": [0.01, 0.05],
-         "P(given eruption, exposure to surge)_standard_2500m": [0, 0.2],
+         "P(given eruption, exposure to surge)_standard_2500m": [0, 0.01],
 
          "P(given exposure, death from surge)_100m": [1, 1],
          "P(given exposure, death from surge)_200m": [0.75, 1],

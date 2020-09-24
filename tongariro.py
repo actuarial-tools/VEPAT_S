@@ -204,31 +204,7 @@ class tongariro(volcano):
         self.dis1strd = self.tbl_surge(erps, p_hrly, p_esx_dis1str, p_exd_dis1)
         self.dis2strd = self.tbl_surge(erps, p_hrly, p_esx_dis2str, p_exd_dis2)
 
-
         return self.dis1strd, self.dis2strd
-
-    def risk_dying_dicts(self, df2, df3, dis, obsp, calt, df1):
-        for i in 0, 1, 2:
-            if i == 0:
-                RDE_sml = self.risk_dying_cal(df2, df3, df1, val=i)
-            elif i == 1:
-                RDE_med = self.risk_dying_cal(df2, df3, df1, val=i)
-            else:
-                RDE_lrg = self.risk_dying_cal(df2, df3, df1, val=i)
-
-        TRDE = RDE_sml + RDE_med + RDE_lrg  # total risk of dying in hour
-
-        self.RDE = {
-            "Calculation:": calt,
-            "Distance(km):": dis,
-            "Site description:": obsp,
-            "Total risk dying in hour:": float(format(TRDE, '.10g')),
-            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.5g')),
-            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.5g')),
-            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.5g'))
-        }
-
-        return self.RDE
 
     def df_summary(self, dctDis0, dctDis1, dctDis2, cal):
         # get distance values
@@ -253,6 +229,30 @@ class tongariro(volcano):
         self.m, self.c = np.polyfit(x1, y1, 1)
 
         return self.df_final, round(self.m, 6), round(self.c, 6), cal
+
+
+    def risk_dying_dicts(self, df2, df3, dis, obsp, calt, df1):
+        for i in 0, 1, 2:
+            if i == 0:
+                RDE_sml = self.risk_dying_cal(df2, df3, df1, val=i)
+            elif i == 1:
+                RDE_med = self.risk_dying_cal(df2, df3, df1, val=i)
+            else:
+                RDE_lrg = self.risk_dying_cal(df2, df3, df1, val=i)
+
+        TRDE = RDE_sml + RDE_med + RDE_lrg  # total risk of dying in hour
+
+        self.RDE = {
+            "Calculation:": calt,
+            "Distance(km):": dis,
+            "Site description:": obsp,
+            "Total risk dying in hour:": float(format(TRDE, '.10g')),
+            "Risk dying from small eruption in hour:": float(format(RDE_sml, '.5g')),
+            "Risk dying from moderate eruption in hour:": float(format(RDE_med, '.5g')),
+            "Risk dying from large eruption in hour:": float(format(RDE_lrg, '.5g'))
+        }
+
+        return self.RDE
 
     def summary_plots(self, df_s, cal):
         inp1 = self.volcano

@@ -71,7 +71,7 @@ class ngauruhoe(volcano):
 
         # generate summary tables and calculations
         pd.options.display.float_format = '{:.3g}'.format
-        summary_strd, slope_strd, yincp_strd, cal_strd = self.df_summary(rde_Dis1strd, rde_Dis2strd, rde_Dis3strd,
+        summary_strd, slope_strd, yincp_strd, cal_strd = self.df_summary(erp_cals, rde_Dis1strd, rde_Dis2strd, rde_Dis3strd,
                                                                             rde_Dis4strd, cal_type1)
 
         # generate volcano specific plots
@@ -85,8 +85,8 @@ class ngauruhoe(volcano):
                    'yinc': [yincp_strd]}
         df_smry = pd.DataFrame(data=tb_smry)
 
-        # Generate final risk zone table
-        riskzn = self.riskzn(df_smry)
+        # Generate final risk zone table only valid for ruapehu
+        #riskzn = self.riskzn(df_smry)
 
 
 
@@ -183,85 +183,35 @@ class ngauruhoe(volcano):
     # SURGE: 0km/350m/1.3km/ for standard, adjusted crater floor and helicopter in southern sector
 
     def table_surge(self):
-        # getting P(hourly) from erp_cls
-        p_small = self.erp_cls.get("P(size3 eruption in hr)", "")
-        p_mod = self.erp_cls.get("P(size4 eruption in hr)", "")
-        p_lrg = self.erp_cls.get("P(size5 eruption in hr)", "")
+        p_small = self.erp_cls.get("P(Phreatic eruption in hr)", "")
+        p_lrg = self.erp_cls.get("P(Larger phreatic eruption in hr)", "")
 
         erps = self.volcanoConfigData['near_vent_inputs'].get("Eruption size", "")
-        p_hrly = [p_small, p_mod, p_lrg]
+        p_hrly = [p_small, p_lrg]
 
         srg_para = self.volcanoConfigData["Surge_inputs"]
 
         # P(given eruption, exposure to surge) at 100, 350 and 1.3km distance for STANDARD CALCULATION (strd),
         # ADJUSTED - MAIN CRATER FLOOR / SOUTHERN SECTOR (adjc) and ADJUSTED - HELICOPTER IN SOUTHERN SECTOR (adjh)
         # standard
-        p_esx_dis1str = srg_para.get("P(given eruption, exposure to surge)_standard_0km", "")
-        p_esx_dis2str = srg_para.get("P(given eruption, exposure to surge)_standard_0.5km", "")
-        p_esx_dis3str = srg_para.get("P(given eruption, exposure to surge)_standard_1.3km", "")
-        p_esx_dis4str = srg_para.get("P(given eruption, exposure to surge)_standard_2km", "")
+        p_esx_dis1str = srg_para.get("P(given eruption, exposure to surge)_standard_100m", "")
+        p_esx_dis2str = srg_para.get("P(given eruption, exposure to surge)_standard_200m", "")
+        p_esx_dis3str = srg_para.get("P(given eruption, exposure to surge)_standard_1000m", "")
+        p_esx_dis4str = srg_para.get("P(given eruption, exposure to surge)_standard_2500m", "")
 
 
-        # P(given exposure, death from surge) at 0km, 0.5km and 1.3km distances
-        p_exd_dis1 = srg_para.get("P(given exposure, death from surge)_0km", "")
-        p_exd_dis2 = srg_para.get("P(given exposure, death from surge)_0.5km", "")
-        p_exd_dis3 = srg_para.get("P(given exposure, death from surge)_1.3km", "")
-        p_exd_dis4 = srg_para.get("P(given exposure, death from surge)_2km", "")
+        # P(given exposure, death from surge) at
+        p_exd_dis1 = srg_para.get("P(given exposure, death from surge)_100m", "")
+        p_exd_dis2 = srg_para.get("P(given exposure, death from surge)_200m", "")
+        p_exd_dis3 = srg_para.get("P(given exposure, death from surge)_1000m", "")
+        p_exd_dis4 = srg_para.get("P(given exposure, death from surge)_2500m", "")
 
         # generate all 9 tables:
         self.dis1strd = self.tbl_surge(erps, p_hrly, p_esx_dis1str, p_exd_dis1)
         self.dis2strd = self.tbl_surge(erps, p_hrly, p_esx_dis2str, p_exd_dis2)
         self.dis3strd = self.tbl_surge(erps, p_hrly, p_esx_dis3str, p_exd_dis3)
         self.dis4strd = self.tbl_surge(erps, p_hrly, p_esx_dis4str, p_exd_dis4)
-
         return self.dis1strd, self.dis2strd, self.dis3strd, self.dis4strd
-
-    def risk_dying_dicts(self, df2, df3, dis, obsp, calt, df1):  # here dis = distance = 0, 0.5, 1.3km depending on the input dfs/ obps: observation point/calt = calculation type\
-        for i in 0, 1, 2:
-            if i == 0:
-                RDE_sml = self.risk_dying_cal(df2, df3, df1, val=i)
-            elif i == 1:
-                RDE_med = self.risk_dying_cal(df2, df3, df1, val=i)
-            else:
-                RDE_lrg = self.risk_dying_cal(df2, df3, df1, val=i)
-
-        TRDE = RDE_sml + RDE_med + RDE_lrg  # total risk of dying in hour
-
-        self.RDE = {
-            "Calculation:": calt,
-            "Distance(km):": dis,
-            "Site description:": obsp,
-            "Total risk dying in hour:": float(format(TRDE, '.10g')),
-            "Risk dying from size3 eruption in hour:": float(format(RDE_sml, '.5g')),
-            "Risk dying from size4 eruption in hour:": float(format(RDE_med, '.5g')),
-            "Risk dying from size5 eruption in hour:": float(format(RDE_lrg, '.5g'))
-        }
-
-        return self.RDE
-
-    def df_summary(self, dctDis1, dctDis2, dctDis3, dctDis4, cal):
-        # get distance values
-        dis1 = dctDis1.get("Distance(km):", "")
-        dis2 = dctDis2.get("Distance(km):", "")
-        dis3 = dctDis3.get("Distance(km):", "")
-        dis4 = dctDis4.get("Distance(km):", "")
-
-        #rdh0 = dctDis0.get("P(eruption in hr)", "")
-        rdh1 = dctDis1.get("Total risk dying in hour:", "")
-        rdh2 = dctDis2.get("Total risk dying in hour:", "")
-        rdh3 = dctDis3.get("Total risk dying in hour:", "")
-        rdh4 = dctDis4.get("Total risk dying in hour:", "")
-
-        tb_final = {'Distance (km)': [dis1, dis2, dis3, dis4],
-                    'Risk dying in hour': [rdh1, rdh2, rdh3,rdh4]}
-        self.df_final = pd.DataFrame(data=tb_final)
-
-        # calculate slope and intercept
-        x1 = self.df_final['Distance (km)']
-        y1 = np.log(self.df_final['Risk dying in hour'])
-        self.m, self.c = np.polyfit(x1, y1, 1)
-
-        return self.df_final, round(self.m, 6), round(self.c, 6), cal
 
     def summary_plots(self, df_s, cal):
         inp1 = self.volcano
@@ -278,6 +228,7 @@ class ngauruhoe(volcano):
         x1max = df_s['Distance (km)'].max()
         y1 = df_s['Risk dying in hour']
         y2 = np.log(df_s['Risk dying in hour'])
+
 
         trace1 = go.Scatter(
             x=x1,
@@ -304,21 +255,21 @@ class ngauruhoe(volcano):
         tit = inp1 + " risk (" + cal + " calc): valid " + inp2 + " for " + inp3
         layout = go.Layout(
             title=tit,
-            xaxis_title="Distance (km)",
+            xaxis_title="Distance (mm)",
             yaxis_title="Hourly risk of dying from eruption",
             yaxis_type="log",
             plot_bgcolor='rgba(0,0,0,0)',
             yaxis=go.layout.YAxis(
                 dtick=1,
                 # tick0 = 0.0000001,
-                range=[-6, 0],
+                range=[max(y2)+1, 0],
                 autorange=False,
                 showexponent='all',
                 exponentformat='E'
             ),
             xaxis = go.layout.XAxis(
-                dtick=0.5,
-                range=[0, x1max + 0.5],
+                dtick=200,
+                range=[0, x1max + 100],
                 autorange=False
             )
         )
@@ -334,14 +285,29 @@ class ngauruhoe(volcano):
                               tickcolor='black', ticklen=4, mirror=True)
         self.fig.update_layout(
             shapes=[
-                # 1st highlight during Feb 4 - Feb 6
                 dict(
                     type="rect",
                     # x-reference is assigned to the x-values
                     xref="paper",
                     # y-reference is assigned to the plot paper [0,1]
                     yref="y",
-                    y0=0.000001,
+                    y0=0.0000000001,
+                    x0=0,
+                    y1=0.000001,
+                    x1=1,
+                    fillcolor="Lightgray",
+                    name='< 10-5 (just field intention form): > 520 m',
+                    opacity=0.5,
+                    layer="below",
+                    line_width=0,
+                ),
+                dict(
+                    type="rect",
+                    # x-reference is assigned to the x-values
+                    xref="paper",
+                    # y-reference is assigned to the plot paper [0,1]
+                    yref="y",
+                    y0=0.0000000001,
                     x0=0,
                     y1=0.00001,
                     x1=1,
@@ -405,6 +371,52 @@ class ngauruhoe(volcano):
         )
 
         self.fig.show()
+
+
+
+    def risk_dying_dicts(self, df2, df3, dis, obsp, calt, df1):  # here dis = distance = 0, 0.5, 1.3km depending on the input dfs/ obps: observation point/calt = calculation type\
+        for i in 0, 1:
+            if i == 0:
+                RDE_sml = self.risk_dying_cal(df2, df3, df1, val=i)
+            else:
+                RDE_lrg = self.risk_dying_cal(df2, df3, df1, val=i)
+
+        TRDE = RDE_sml + RDE_lrg  # total risk of dying in hour
+
+        self.RDE = {
+            "Calculation:": calt,
+            "Distance(km):": dis,
+            "Site description:": obsp,
+            "Total risk dying in hour:": float(format(TRDE, '.10g')),
+            "Risk dying from phreatic eruption in hour:": float(format(RDE_sml, '.5g')),
+            "Risk dying from larger phreatic eruption in hour:": float(format(RDE_lrg, '.5g'))
+        }
+
+        return self.RDE
+
+    def df_summary(self, dctDis0, dctDis1, dctDis2, dctDis3, dctDis4, cal):
+        # get distance values
+        dis1 = dctDis1.get("Distance(km):", "")
+        dis2 = dctDis2.get("Distance(km):", "")
+        dis3 = dctDis3.get("Distance(km):", "")
+        dis4 = dctDis4.get("Distance(km):", "")
+
+        rdh0 = dctDis0.get("P(eruption in hr)", "")
+        rdh1 = dctDis1.get("Total risk dying in hour:", "")
+        rdh2 = dctDis2.get("Total risk dying in hour:", "")
+        rdh3 = dctDis3.get("Total risk dying in hour:", "")
+        rdh4 = dctDis4.get("Total risk dying in hour:", "")
+
+        tb_final = {'Distance (km)': [0, dis1, dis2, dis3, dis4],
+                    'Risk dying in hour': [rdh0, rdh1, rdh2, rdh3,rdh4]}
+        self.df_final = pd.DataFrame(data=tb_final)
+
+        # calculate slope and intercept
+        x1 = self.df_final['Distance (km)']
+        y1 = np.log(self.df_final['Risk dying in hour'])
+        self.m, self.c = np.polyfit(x1, y1, 1)
+
+        return self.df_final, round(self.m, 6), round(self.c, 6), cal
 
     # final risk zone table
     def riskzn(self, df2):
